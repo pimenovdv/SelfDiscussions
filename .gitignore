@@ -1,0 +1,5 @@
+*.pyc
+__pycache__/
+verify_chunks*.py
+update_agents_md.py
+prep2.py
