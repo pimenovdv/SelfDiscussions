@@ -1,14 +1,35 @@
-# База знаний проекта
+# Индекс базы знаний
 
-Проект посвящен познанию мира во всех его научных аспектах: биологические нейросети, искусственный интеллект, эволюция, физика, химия, биология, алгоритмы, симуляции и т.д.
+- [ai_and_consciousness.md](ai_and_consciousness.md)
+- [biology.md](biology.md)
+- [computer_science.md](computer_science.md)
+- [ethics_heuristics.md](ethics_heuristics.md)
+- [general_knowledge.md](general_knowledge.md)
+- [neurochemical_symbiosis_plasticity.md](neurochemical_symbiosis_plasticity.md)
+- [participants.md](participants.md)
+- [physics.md](physics.md)
+- [psychology_dynamics.md](psychology_dynamics.md)
+- [quantum_computing.md](quantum_computing.md)
+- [simulation_concepts.md](simulation_concepts.md)
+- [teleological_trap.md](teleological_trap.md)
+- [universal_rules.md](universal_rules.md)
 
-## Структура
-
-* **[Универсальные правила (agents.md)](../agents.md)**
-* **[Характеристики участников](participants.md)**
-* **[Дискуссии](../discussions/active/)**
-* **[Архив дискуссий](../discussions/archived/)**
-* **[Заметки](../notes/)**
-* **[Планы](../plans/)**
-* **[Дашборды](../dashboards/)**
-* **[Научные статьи](../scientific_articles/)**
+## Эксперименты над поведением
+- [alexey_music_experiment.md](alexey_music_experiment.md)
+- [behavior_experiment_alexey_social.md](behavior_experiment_alexey_social.md)
+- [behavior_experiment_chronos_poetry.md](behavior_experiment_chronos_poetry.md)
+- [behavior_experiment_chuck.md](behavior_experiment_chuck.md)
+- [behavior_experiment_elon.md](behavior_experiment_elon.md)
+- [behavior_experiment_elon_cars.md](behavior_experiment_elon_cars.md)
+- [behavior_experiment_grigory.md](behavior_experiment_grigory.md)
+- [behavior_experiment_max_alchemist.md](behavior_experiment_max_alchemist.md)
+- [behavior_experiment_mikhail.md](behavior_experiment_mikhail.md)
+- [behavior_experiment_sam.md](behavior_experiment_sam.md)
+- [behavior_experiment_stanislav2.md](behavior_experiment_stanislav2.md)
+- [experiment_alexey.md](experiment_alexey.md)
+- [experiment_mikhail_teleology.md](experiment_mikhail_teleology.md)
+- [experiment_sam_emotional.md](experiment_sam_emotional.md)
+- [experiment_vladimir_bureaucracy.md](experiment_vladimir_bureaucracy.md)
+- [experiment_vladimir_bureaucratic.md](experiment_vladimir_bureaucratic.md)
+- [psychology_experiment_stanislav.md](psychology_experiment_stanislav.md)
+- [psychology_stanislav.md](psychology_stanislav.md)
