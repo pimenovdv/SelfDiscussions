@@ -120,7 +120,3 @@ def main():
             del model
             del tokenizer
             pbar.update()
-
-
-if __name__ == '__main__':
-    main()
