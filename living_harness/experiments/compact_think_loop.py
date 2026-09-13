@@ -2,6 +2,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import time
 import os
+from datetime import datetime
 
 def run_experiment():
     model_name = "prithivMLmods/SmolLM2-Rethink-360M"
@@ -47,26 +48,29 @@ def run_experiment():
     lexical_diversity = len(unique_words) / len(words) if words else 0
 
     report = (
-        "--- Experiment Results ---\n"
-        f"Model: {model_name}\n"
-        f"Total generation time: {duration:.2f} seconds\n"
-        f"Total generated tokens: {num_tokens}\n"
-        f"Think process tokens: {think_tokens}\n"
-        f"Tokens per second: {num_tokens / duration:.2f}\n"
-        f"Lexical Diversity: {lexical_diversity:.3f}\n"
+        "# Experiment Results\n\n"
+        f"**Model:** `{model_name}`\n\n"
+        f"- **Total generation time:** {duration:.2f} seconds\n"
+        f"- **Total generated tokens:** {num_tokens}\n"
+        f"- **Think process tokens:** {think_tokens}\n"
+        f"- **Tokens per second:** {num_tokens / duration:.2f}\n"
+        f"- **Lexical Diversity:** {lexical_diversity:.3f}\n\n"
     )
     if lexical_diversity < 0.2:
-        report += "Warning: Low lexical diversity, possible repetitive loop.\n"
+        report += "**Warning:** Low lexical diversity, possible repetitive loop.\n\n"
 
-    report += "\n--- Output Preview ---\n"
-    report += generated_text[:500] + "...\n" + generated_text[-500:] + "\n"
-    report += "----------------------\n"
+    report += "## Full Output\n\n```text\n"
+    report += generated_text + "\n```\n"
 
     print(report)
 
     # Save the log
-    with open("results.log", "w") as f:
+    os.makedirs("data", exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"data/experiment_{timestamp}.md"
+    with open(filename, "w") as f:
         f.write(report)
+    print(f"Results saved to {filename}")
 
 if __name__ == "__main__":
     run_experiment()
