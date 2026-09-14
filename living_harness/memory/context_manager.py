@@ -1,8 +1,11 @@
 import datetime
 from typing import List, Dict, Any
+from living_harness.core.decay_mechanisms import RelevanceDecay
 
 class ContextManager:
-    def __init__(self, system_prompt: str, max_window_tokens: int = 4096):
+    def __init__(self, system_prompt: str, max_window_tokens: int = 4096, decay_rate: float = 0.05):
+        self.decay_mechanism = RelevanceDecay(base_decay_rate=decay_rate)
+
         """
         Управляет контекстом «живого ИИ», разделяя его на системный промпт, память и окно рассуждений.
         """
@@ -24,6 +27,24 @@ class ContextManager:
         self.reasoning_window.append({"text": text, "tokens": estimated_tokens})
         self._truncate_if_needed()
 
+    def _apply_decay_and_prune_memory(self) -> None:
+        """
+        Применяет морфологическое увядание к памяти. Записи, чья релевантность
+        падает ниже порога, удаляются.
+        """
+        current_time = datetime.datetime.now()
+        threshold = 0.1 # Порог релевантности для удаления
+
+        # Идем с конца, чтобы безопасно удалять элементы по индексу
+        for i in range(len(self.memory) - 1, -1, -1):
+            mem = self.memory[i]
+            mem_time = datetime.datetime.fromisoformat(mem["timestamp"])
+            age_minutes = (current_time - mem_time).total_seconds() / 60.0
+            relevance = self.decay_mechanism.calculate_penalty(age_minutes)
+
+            if relevance < threshold:
+                self.memory.pop(i)
+
     def _truncate_if_needed(self) -> None:
         """
         Логика усечения: при достижении 95% от max_window_tokens
@@ -40,7 +61,8 @@ class ContextManager:
                 current_tokens -= removed_item["tokens"]
 
     def build_prompt(self) -> str:
-        """Формирует итоговый контекст для модели."""
+        """Формирует итоговый контекст для модели с учетом увядания памяти."""
+        self._apply_decay_and_prune_memory()
         prompt_parts = [
             "<|system|>",
             self.system_prompt,

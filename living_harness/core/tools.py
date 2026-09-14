@@ -1,4 +1,5 @@
 import datetime
+from living_harness.core.semantic_checksum import SemanticChecksum
 
 class Tools:
     def __init__(self, context_manager):
@@ -30,11 +31,15 @@ class Tools:
 
     def overwrite_memory(self, index: int, new_content: str) -> str:
         """
-        Перезаписывает существующий блок памяти по индексу.
+        Перезаписывает существующий блок памяти по индексу с семантической проверкой.
         """
         if 0 <= index < len(self.context_manager.memory):
-            self.context_manager.memory[index]["content"] = new_content
-            self.context_manager.memory[index]["timestamp"] = datetime.datetime.now().isoformat()
-            return f"Память по индексу {index} успешно перезаписана."
+            old_content = self.context_manager.memory[index]["content"]
+            if SemanticChecksum.verify_overwrite(old_content, new_content):
+                self.context_manager.memory[index]["content"] = new_content
+                self.context_manager.memory[index]["timestamp"] = datetime.datetime.now().isoformat()
+                return f"Память по индексу {index} успешно перезаписана."
+            else:
+                return f"Ошибка: Семантический сдвиг слишком велик. Перезапись отклонена для предотвращения деградации памяти."
         else:
             return f"Ошибка: Индекс памяти {index} вне диапазона."
