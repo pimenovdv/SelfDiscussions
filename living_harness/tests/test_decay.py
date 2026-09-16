@@ -1,5 +1,5 @@
 import pytest
-from core.decay_mechanisms import RelevanceDecay
+from living_harness.core.decay_mechanisms import RelevanceDecay
 import math
 
 def test_relevance_decay_penalty():
