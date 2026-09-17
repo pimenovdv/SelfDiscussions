@@ -1,0 +1,7 @@
+Hybrid Compression Benchmark Results
+Model used: tencent/Hunyuan-0.5B-Instruct
+Original session items: 100
+Compression time: 0.0013 seconds
+Vector Semantic Degradation (MSE): 0.000000
+Inference Status: Failed (connection error or local model server down)
+Compressed text sample: User asks question 0. User asks question 1. User asks question 2. User asks question 3. User asks qu...
