@@ -1,0 +1,3 @@
+Query: 'Can you help me center a div using CSS Flexbox?' -> Routed to: CodeBot
+Query: 'What are the implications of string theory on our understanding of multiple universes?' -> Routed to: DesignBot
+Query: 'Which color palette would best suit a modern meditation app?' -> Routed to: DesignBot
