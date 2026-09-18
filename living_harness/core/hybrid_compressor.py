@@ -1,22 +1,36 @@
 import torch
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from living_harness.core.local_llm_connector import LocalLLMConnector
 
 class HybridCompressor:
     """
     Combines semantic compression (extracting key themes) with vector aggregation
     (averaging vectors) to reduce memory footprint while preserving essential information.
     """
-    def __init__(self, compression_ratio: float = 0.5):
+    def __init__(self, compression_ratio: float = 0.5, llm_connector: Optional[LocalLLMConnector] = None):
         self.compression_ratio = compression_ratio
+        self.llm_connector = llm_connector
 
     def extract_key_themes(self, text_blocks: List[str]) -> str:
         """
-        Placeholder for semantic compression.
-        In a real scenario, this would use an LLM or extractive method to summarize
-        or extract themes from the text blocks.
+        Uses an LLM to summarize or extract themes from the text blocks.
+        Falls back to a simple heuristic if LLM is not available.
         """
         if not text_blocks:
             return ""
+
+        combined_text = "\n".join(text_blocks)
+
+        if self.llm_connector:
+            prompt = (
+                "You are an expert summarizer. Please provide a concise and highly meaningful summary "
+                "of the following text blocks, capturing the key points and context:\n\n"
+                f"{combined_text}\n\nSummary:"
+            )
+            # Use generate to get the summary
+            summary = self.llm_connector.generate(prompt)
+            if summary:
+                return summary.strip()
 
         # Simple extraction heuristic for the prototype: take the first part of each block
         themes = []

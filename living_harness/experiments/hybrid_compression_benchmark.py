@@ -1,80 +1,75 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from core.hybrid_compressor import HybridCompressor
-from core.local_llm_connector import LocalLLMConnector
-import time
-import math
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+import torch
+import random
+from typing import List, Dict, Any
+from living_harness.core.hybrid_compressor import HybridCompressor
+
+def generate_mock_context(num_items: int) -> List[Dict[str, Any]]:
+    context = []
+    for i in range(num_items):
+        item = {
+            'text': f"Message {i}. This is a detailed explanation about topic {i%5}. We should consider the implications of this approach.",
+            'vector': [random.random() for _ in range(128)]
+        }
+        context.append(item)
+    return context
+
+def calculate_cosine_similarity(v1: List[float], v2: List[float]) -> float:
+    t1 = torch.tensor(v1)
+    t2 = torch.tensor(v2)
+    if torch.norm(t1) == 0 or torch.norm(t2) == 0:
+        return 0.0
+    return torch.nn.functional.cosine_similarity(t1.unsqueeze(0), t2.unsqueeze(0)).item()
 
 def run_benchmark():
-    compressor = HybridCompressor()
+    compressor = HybridCompressor(compression_ratio=0.5)
 
-    # Initialize the local LLM connector
-    llm_connector = LocalLLMConnector()
-    model_name = "tencent/Hunyuan-0.5B-Instruct"
+    num_items = 100
+    context = generate_mock_context(num_items)
 
-    # Generate synthetic dialogue session data simulating 100 exchanges
-    num_exchanges = 100
-    dialogue_session = []
+    print(f"Starting benchmark with {num_items} context items...")
 
-    # Generate some pseudo-random but deterministic vectors
-    for i in range(num_exchanges):
-        text = f"User asks question {i}. Agent responds to question {i} with a detailed explanation."
-        vector = [math.sin(i * 0.1), math.cos(i * 0.1)]
-        dialogue_session.append({
-            "text": text,
-            "vector": vector
-        })
+    original_vectors = [item['vector'] for item in context]
+    original_mean_vector = compressor.aggregate_vectors(original_vectors)
 
-    print(f"Original session length: {len(dialogue_session)} items.")
+    cycles = 5
+    current_context = context.copy()
 
-    # Compress the whole session into one
-    start_time = time.time()
-    compressed = compressor.compress(dialogue_session)
-    end_time = time.time()
+    log_messages = []
+    log_messages.append(f"Starting benchmark with {num_items} items.")
+    log_messages.append("-" * 40)
 
-    print(f"Compression completed in {end_time - start_time:.4f} seconds.")
-    print(f"Original items compressed: {compressed['original_count']}")
+    for cycle in range(1, cycles + 1):
+        compressed_item = compressor.compress(current_context)
+        sim = calculate_cosine_similarity(original_mean_vector, compressed_item['compressed_vector'])
 
-    # Calculate Mean Squared Error as semantic degradation metric for vectors
-    orig_vectors = [item['vector'] for item in dialogue_session]
-    avg_orig = [sum(x)/len(x) for x in zip(*orig_vectors)]
-    comp_vector = compressed['compressed_vector']
+        new_items = generate_mock_context(10)
 
-    print(f"Average of original vectors: {avg_orig}")
-    print(f"Compressed vector: {comp_vector}")
+        repacked_compressed = {
+            'text': compressed_item['compressed_text'],
+            'vector': compressed_item['compressed_vector']
+        }
 
-    mse = sum((a - b) ** 2 for a, b in zip(avg_orig, comp_vector)) / len(avg_orig)
-    print(f"Vector Semantic Degradation (MSE): {mse:.6f}")
+        current_context = [repacked_compressed] + new_items
 
-    # Use the LLM connector to evaluate the compressed context (simulating a burst of thought)
-    evaluation_prompt = f"Evaluate the compressed context: {compressed['compressed_text'][:200]}"
-    try:
-        # In a real environment, this makes an HTTP request to the local model.
-        # If the model server is not running, it will fail gracefully.
-        print("Running inference on compact model...")
-        llm_response = llm_connector.generate(prompt=evaluation_prompt, model=model_name)
-        if llm_response is None:
-             inference_status = "Failed (connection error or local model server down)"
-        else:
-             inference_status = "Success"
-        print(f"Inference status: {inference_status}")
-    except Exception as e:
-        inference_status = f"Failed (expected if local model server is down): {str(e)}"
-        print(inference_status)
+        original_text_len = sum(len(c.get('text', '')) for c in context)
+        msg = (f"Cycle {cycle}: Compressed {compressed_item['original_count']} items into 1.\n"
+               f"Original text length vs Compressed text length: {original_text_len} -> {len(compressed_item['compressed_text'])}\n"
+               f"Cosine Similarity of semantic vector to original baseline: {sim:.4f}")
+        print(msg)
+        log_messages.append(msg)
 
-    # Output to logs
-    os.makedirs("data", exist_ok=True)
-    with open("data/hybrid_compression_results.txt", "w") as f:
-        f.write(f"Hybrid Compression Benchmark Results\n")
-        f.write(f"Model used: {model_name}\n")
-        f.write(f"Original session items: {len(dialogue_session)}\n")
-        f.write(f"Compression time: {end_time - start_time:.4f} seconds\n")
-        f.write(f"Vector Semantic Degradation (MSE): {mse:.6f}\n")
-        f.write(f"Inference Status: {inference_status}\n")
-        f.write(f"Compressed text sample: {compressed['compressed_text'][:100]}...\n")
+    log_content = "\n\n".join(log_messages)
 
-    print("Results saved to data/hybrid_compression_results.txt")
+    os.makedirs('living_harness/data', exist_ok=True)
+    with open('living_harness/data/hybrid_compression_results.txt', 'w', encoding='utf-8') as f:
+        f.write(log_content)
+
+    print("Benchmark complete. Results saved to living_harness/data/hybrid_compression_results.txt")
 
 if __name__ == "__main__":
     run_benchmark()
