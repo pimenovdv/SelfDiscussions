@@ -1,5 +1,7 @@
 import datetime
 from living_harness.core.semantic_checksum import SemanticChecksum
+import time
+from typing import Dict, Any
 
 class Tools:
     def __init__(self, context_manager):
@@ -43,3 +45,42 @@ class Tools:
                 return f"Ошибка: Семантический сдвиг слишком велик. Перезапись отклонена для предотвращения деградации памяти."
         else:
             return f"Ошибка: Индекс памяти {index} вне диапазона."
+
+class HarnessTools:
+    def __init__(self, context_manager, websocket=None):
+        self.context_manager = context_manager
+        self.websocket = websocket
+
+    def new_memory(self, key: str, value: str) -> str:
+        space = self.context_manager.get_memory_space()
+        if len(self.context_manager.memories) >= space:
+            return "Error: Memory full."
+
+        self.context_manager.memories[key] = {
+            "timestamp": time.time(),
+            "data": value
+        }
+        # Update dynamic t
+        estimated_tokens = len(value.split()) # simple heuristic
+        self.context_manager.update_dynamic_t(estimated_tokens)
+        return f"Memory '{key}' saved."
+
+    def overwrite_memory(self, key: str, value: str) -> str:
+        if key in self.context_manager.memories:
+             self.context_manager.memories[key] = {
+                 "timestamp": time.time(),
+                 "data": value
+             }
+             estimated_tokens = len(value.split())
+             self.context_manager.update_dynamic_t(estimated_tokens)
+             return f"Memory '{key}' overwritten."
+        return self.new_memory(key, value)
+
+    def get_memory_space(self) -> int:
+        return self.context_manager.get_memory_space()
+
+    async def ask_user(self, message: str) -> str:
+        print(f"\n[AI ASKS USER]: {message}")
+        if self.websocket:
+            await self.websocket.send_text(f"[AI]: {message}")
+        return "Message sent to user."

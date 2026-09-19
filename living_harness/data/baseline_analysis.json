@@ -1,0 +1,62 @@
+{
+    "Qwen_Qwen3.5-2B_RU/think_with_end": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_start_assistant": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_think": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-2B_RU/start_with_end_assistant": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_start": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-2B_RU/start_with_end": {
+        "steps": 21,
+        "estimated_tokens": 106706,
+        "avg_tokens_per_step": 5081.238095238095
+    },
+    "Qwen_Qwen3.5-0.8B_RU/think_with_end": {
+        "steps": 21,
+        "estimated_tokens": 119574,
+        "avg_tokens_per_step": 5694.0
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_start_assistant": {
+        "steps": 21,
+        "estimated_tokens": 77907,
+        "avg_tokens_per_step": 3709.8571428571427
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_think": {
+        "steps": 21,
+        "estimated_tokens": 103807,
+        "avg_tokens_per_step": 4943.190476190476
+    },
+    "Qwen_Qwen3.5-0.8B_RU/start_with_end_assistant": {
+        "steps": 21,
+        "estimated_tokens": 33530,
+        "avg_tokens_per_step": 1596.6666666666667
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_start": {
+        "steps": 21,
+        "estimated_tokens": 48630,
+        "avg_tokens_per_step": 2315.714285714286
+    },
+    "Qwen_Qwen3.5-0.8B_RU/start_with_end": {
+        "steps": 21,
+        "estimated_tokens": 54004,
+        "avg_tokens_per_step": 2571.6190476190477
+    }
+}
