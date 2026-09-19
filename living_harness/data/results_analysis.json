@@ -1,0 +1,74 @@
+{
+    "Qwen_Qwen3.5-2B_RU/think_with_end": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_start_assistant": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_think": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-2B_RU/start_with_end_assistant": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-2B_RU/no_end_start": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-2B_RU/start_with_end": {
+        "total_steps": 21,
+        "total_size": 716341,
+        "avg_repetition_score": 0.056996522822867754,
+        "avg_size": 34111.47619047619
+    },
+    "Qwen_Qwen3.5-0.8B_RU/think_with_end": {
+        "total_steps": 21,
+        "total_size": 546509,
+        "avg_repetition_score": 0.019441817893420043,
+        "avg_size": 26024.238095238095
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_start_assistant": {
+        "total_steps": 21,
+        "total_size": 339257,
+        "avg_repetition_score": 0.21865983615309428,
+        "avg_size": 16155.095238095239
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_think": {
+        "total_steps": 21,
+        "total_size": 588819,
+        "avg_repetition_score": 0.014434191317907675,
+        "avg_size": 28039.0
+    },
+    "Qwen_Qwen3.5-0.8B_RU/start_with_end_assistant": {
+        "total_steps": 21,
+        "total_size": 220714,
+        "avg_repetition_score": 0.025664091411103124,
+        "avg_size": 10510.190476190477
+    },
+    "Qwen_Qwen3.5-0.8B_RU/no_end_start": {
+        "total_steps": 21,
+        "total_size": 296708,
+        "avg_repetition_score": 0.03728167160366224,
+        "avg_size": 14128.952380952382
+    },
+    "Qwen_Qwen3.5-0.8B_RU/start_with_end": {
+        "total_steps": 21,
+        "total_size": 363529,
+        "avg_repetition_score": 0.016980741391428043,
+        "avg_size": 17310.904761904763
+    }
+}
