@@ -1,0 +1,5 @@
+Agent Router Benchmark Results:
+========================================
+Heuristic    | Accuracy:  50.00% | Avg Time: 0.0001s
+LLM          | Accuracy:   0.00% | Avg Time: 0.5004s
+Embedding    | Accuracy:  50.00% | Avg Time: 0.0134s
