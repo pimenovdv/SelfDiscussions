@@ -7,6 +7,7 @@ import torch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from living_harness.analytics.autonomy_metrics import calculate_reasoning_density
+from living_harness.core.attention_collapse_penalty import detect_and_penalize_repetition
 
 def run_benchmark():
     model_name = "prithivMLmods/SmolLM2-Rethink-135M"
@@ -31,6 +32,8 @@ def run_benchmark():
     logs = []
     start_time = time.time()
 
+    prev_text = ""
+
     for step in range(3):
         print(f"Iteration {step+1}...")
         outputs = model.generate(
@@ -46,11 +49,19 @@ def run_benchmark():
         if generated_text.endswith("<|im_end|>") or generated_text.endswith("<|endoftext|>"):
             generated_text = generated_text.replace("<|im_end|>", "").replace("<|endoftext|>", "") + "\n<think>\n"
 
+        # Apply the repetition penalty heurism
+        if detect_and_penalize_repetition(generated_text, prev_text):
+            # In a real scenario we might alter the prompt or apply a temperature penalty
+            # Here we simulate breaking the cycle by forcing a break and re-prompting
+            generated_text += "\n[System: Repetition detected. Breaking cycle.]\n<think>\nLet me look at this from a different angle."
+
         logs.append({
             "step": step,
             "text": generated_text,
             "timestamp": time.time()
         })
+
+        prev_text = generated_text
 
         inputs = tokenizer(generated_text, return_tensors="pt").to(model.device)
 
