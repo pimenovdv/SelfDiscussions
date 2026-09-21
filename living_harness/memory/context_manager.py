@@ -2,6 +2,9 @@ import datetime
 from typing import List, Dict, Any
 from living_harness.core.decay_mechanisms import RelevanceDecay
 from living_harness.core.hybrid_compressor import HybridCompressor
+from living_harness.core.structural_cohesion import calculate_structural_importance, merge_entropy_and_cohesion
+from living_harness.analytics.entropy_analyzer import calculate_shannon_entropy
+
 
 class ContextManager:
     def __init__(self, system_prompt: str, max_window_tokens: int = 4096, decay_rate: float = 0.05, enable_hybrid_compression: bool = True):
@@ -55,20 +58,70 @@ class ContextManager:
     def _truncate_if_needed(self) -> None:
         """
         Логика усечения: при достижении 95% от max_window_tokens
-        окно очищается от старых рассуждений так, чтобы остался объем не более 10% от лимита,
-        либо применяется гибридная компрессия, если включена.
+        окно очищается на основе метрик структурной связности и локальной энтропии.
+        Вытесняются элементы с наименьшей комбинированной важностью, пока объем не станет <= 10% от лимита,
+        либо применяется гибридная компрессия.
         """
         current_tokens = sum(item["tokens"] for item in self.reasoning_window)
         threshold_95 = 0.95 * self.max_window_tokens
         threshold_10 = 0.10 * self.max_window_tokens
 
         if current_tokens >= threshold_95:
-            if self.enable_hybrid_compression and self.compressor and len(self.reasoning_window) > 1:
+            # Вычисляем важность каждого элемента окна
+            entropies = []
+            cohesions = []
+            for item in self.reasoning_window:
+                text = item["text"]
+                entropy = calculate_shannon_entropy(text)
+
+                # Структурная связность: усредняем важность токенов
+                token_importances = calculate_structural_importance(text)
+                if token_importances:
+                    cohesion = sum(token_importances) / len(token_importances)
+                else:
+                    cohesion = 0.0
+
+                entropies.append(entropy)
+                cohesions.append(cohesion)
+
+            # Нормализация энтропии (чтобы привести к масштабу 0-1 для комбинации)
+            max_entropy = max(entropies) if entropies and max(entropies) > 0 else 1.0
+            normalized_entropies = [e / max_entropy for e in entropies]
+
+            # Комбинируем метрики
+            retention_scores = merge_entropy_and_cohesion(normalized_entropies, cohesions, alpha=0.5)
+
+            # Прикрепляем оценки к индексам и сортируем по возрастанию оценки (наименее важные в начале)
+            scored_items = sorted(enumerate(retention_scores), key=lambda x: x[1])
+
+            items_to_remove_indices = []
+            tokens_to_remove = current_tokens - threshold_10
+            removed_tokens_count = 0
+
+            for idx, score in scored_items:
+                if removed_tokens_count >= tokens_to_remove:
+                    break
+                items_to_remove_indices.append(idx)
+                removed_tokens_count += self.reasoning_window[idx]["tokens"]
+
+            # Сортируем индексы по убыванию, чтобы безопасно удалять из списка
+            items_to_remove_indices.sort(reverse=True)
+
+            if self.enable_hybrid_compression and self.compressor and len(items_to_remove_indices) > 0:
                 items_to_compress = []
-                while self.reasoning_window and current_tokens > threshold_10:
-                    removed_item = self.reasoning_window.pop(0)
-                    items_to_compress.append(removed_item)
-                    current_tokens -= removed_item["tokens"]
+# Извлечение элементов в хронологическом порядке
+                items_to_remove_indices.sort() # Сортируем по возрастанию для извлечения в правильном порядке
+
+                # Удаляем с конца, чтобы не сбить индексы, но сохраняем в правильном порядке
+                # Проще создать новый список для reasoning_window
+                new_reasoning_window = []
+                for i, item in enumerate(self.reasoning_window):
+                    if i in items_to_remove_indices:
+                        items_to_compress.append(item)
+                    else:
+                        new_reasoning_window.append(item)
+
+                self.reasoning_window = new_reasoning_window
 
                 if items_to_compress:
                     compressed = self.compressor.compress(items_to_compress)
@@ -81,10 +134,9 @@ class ContextManager:
                     }
                     self.reasoning_window.insert(0, compressed_item)
             else:
-                # Усекаем старые данные, пока текущий размер не станет <= 10% лимита
-                while self.reasoning_window and current_tokens > threshold_10:
-                    removed_item = self.reasoning_window.pop(0)
-                    current_tokens -= removed_item["tokens"]
+                # Просто удаляем элементы с наименьшей оценкой
+                for idx in items_to_remove_indices:
+                    self.reasoning_window.pop(idx)
 
     def build_prompt(self) -> str:
         """Формирует итоговый контекст для модели с учетом увядания памяти."""
