@@ -1,3 +1,4 @@
+from living_harness.memory.vector_store import VectorStore
 import datetime
 from typing import List, Dict, Any
 from living_harness.core.decay_mechanisms import RelevanceDecay
@@ -10,6 +11,7 @@ class ContextManager:
     def __init__(self, system_prompt: str, max_window_tokens: int = 4096, decay_rate: float = 0.05, enable_hybrid_compression: bool = True):
         self.decay_mechanism = RelevanceDecay(base_decay_rate=decay_rate)
         self.compressor = HybridCompressor() if enable_hybrid_compression else None
+        self.vector_store = VectorStore()
 
         """
         Управляет контекстом «живого ИИ», разделяя его на системный промпт, память и окно рассуждений.
@@ -127,6 +129,9 @@ class ContextManager:
                     compressed = self.compressor.compress(items_to_compress)
                     compressed_text = "[СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] " + compressed['compressed_text']
 
+                    if compressed.get('compressed_vector'):
+                        self.vector_store.add_item(compressed['compressed_text'], compressed['compressed_vector'])
+
                     compressed_item = {
                         "text": compressed_text,
                         "tokens": len(compressed_text) // 4,
@@ -158,3 +163,10 @@ class ContextManager:
             prompt_parts.append(reason["text"])
 
         return "\n".join(prompt_parts)
+
+    def retrieve_relevant_memory(self, query_vector: List[float], top_k: int = 1) -> str:
+        """Извлекает релевантную долговременную память по вектору."""
+        results = self.vector_store.search(query_vector, top_k)
+        if results:
+            return "\n".join([f"[ИЗВЛЕЧЕНО ИЗ ПАМЯТИ] {item['text']}" for item in results])
+        return ""
