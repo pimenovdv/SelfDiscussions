@@ -1,0 +1,13 @@
+{
+    "num_episodes": 1000,
+    "vector_dim": 64,
+    "num_clusters": 10,
+    "compressed_size": 10,
+    "compression_ratio_percent": 99.0,
+    "execution_time_sec": 0.5593655109405518,
+    "abstract_rules_preview": [
+        "Consolidated rule for cluster 0 based on: Memory about event 7 | Memory about event 17 | Memory abou...",
+        "Consolidated rule for cluster 1 based on: Memory about event 4 | Memory about event 14 | Memory abou...",
+        "Consolidated rule for cluster 2 based on: Memory about event 3 | Memory about event 5 | Memory about..."
+    ]
+}
