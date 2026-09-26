@@ -143,14 +143,20 @@ class ContextManager:
                 for idx in items_to_remove_indices:
                     self.reasoning_window.pop(idx)
 
-    def build_prompt(self) -> str:
+    def build_prompt(self, query_vector: List[float] = None) -> str:
         """Формирует итоговый контекст для модели с учетом увядания памяти."""
         self._apply_decay_and_prune_memory()
         prompt_parts = [
             "<|system|>",
-            self.system_prompt,
-            "\n<|memory|>"
+            self.system_prompt
         ]
+
+        if query_vector:
+            rules = self.retrieve_semantic_rules(query_vector)
+            if rules:
+                prompt_parts.append("\n<|rules|>\n" + rules)
+
+        prompt_parts.append("\n<|memory|>")
 
         for mem in self.memory:
             if "timestamp" in mem and mem["timestamp"]:
@@ -170,3 +176,14 @@ class ContextManager:
         if results:
             return "\n".join([f"[ИЗВЛЕЧЕНО ИЗ ПАМЯТИ] {item['text']}" for item in results])
         return ""
+
+    def retrieve_semantic_rules(self, query_vector: List[float], top_k: int = 1) -> str:
+        """Извлекает релевантные абстрактные семантические правила в текущий промпт."""
+        results = self.vector_store.search(query_vector, top_k * 5)
+        rules = []
+        for item in results:
+            if item.get("metadata", {}).get("type") == "semantic":
+                rules.append(f"[СЕМАНТИЧЕСКОЕ ПРАВИЛО] {item['text']}")
+                if len(rules) >= top_k:
+                    break
+        return "\n".join(rules) if rules else ""
