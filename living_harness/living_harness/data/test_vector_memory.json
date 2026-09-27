@@ -1,0 +1,29 @@
+[
+  {
+    "text": "The quick brown fox jumps over the lazy dog",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {}
+  },
+  {
+    "text": "A fast brown fox leaped over a sleepy dog",
+    "vector": [
+      0.9,
+      0.1,
+      0.0
+    ],
+    "metadata": {}
+  },
+  {
+    "text": "Artificial intelligence is fascinating",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {}
+  }
+]
