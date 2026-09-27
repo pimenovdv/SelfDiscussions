@@ -59,4 +59,33 @@ class MemoryConsolidator:
         """
         Фоновый процесс "сна" для перевода эпизодической памяти в семантическую.
         """
-        pass
+        if not self.vector_store:
+            return
+
+        episodic_memories = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") == "episodic"]
+
+        if not episodic_memories:
+            return
+
+        # Форматируем данные для consolidate_memories
+        memories_to_consolidate = []
+        for m in episodic_memories:
+            memories_to_consolidate.append({
+                "content": m["text"],
+                "vector": m["vector"]
+            })
+
+        abstract_rules = self.consolidate_memories(memories_to_consolidate)
+
+        # Очищаем старые эпизодические воспоминания
+        self.vector_store.memory = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") != "episodic"]
+
+        # Добавляем новые семантические правила
+        for rule in abstract_rules:
+            self.vector_store.add_item(
+                text=rule["content"],
+                vector=rule.get("centroid", []),
+                metadata={"type": "semantic", "timestamp": rule["timestamp"], "importance": rule["importance"]}
+            )
+
+        self.vector_store._save()
