@@ -1,6 +1,6 @@
 # План развития и исследований (TODO) - Этап 26: Оптимизация памяти
 
-- [ ] 1. **Оптимизация MemoryConsolidator** (артефакт: `living_harness/memory/consolidation.py`)
+- [x] 1. **Оптимизация MemoryConsolidator** (артефакт: `living_harness/memory/consolidation.py`)
   - Улучшить алгоритм кластеризации для более точного определения семантических правил.
-- [ ] 2. **Тестирование кластеризации** (артефакт: `living_harness/experiments/test_clustering.py`)
+- [x] 2. **Тестирование кластеризации** (артефакт: `living_harness/experiments/test_clustering.py`)
   - Проверить эффективность улучшенного алгоритма на большем наборе данных.
