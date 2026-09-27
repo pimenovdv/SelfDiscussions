@@ -1,0 +1,59 @@
+[
+  {
+    "text": "Some long reasoning block 0 that takes up space. Some long reasoning block 1 that takes up space. Some long reasoning block 2 that takes up space. Some long reasoning block 3 that takes up space. Some long reasoning block 4 that takes up space.",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {}
+  },
+  {
+    "text": "[СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] Some long reasoning block 0 that takes up space. Some long reasoning block 5 that takes up space. Some long reasoning block 6 that takes up space.",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {}
+  },
+  {
+    "text": "[СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] [СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] Some long reasoning block 0 that takes up space. Some long reasoning block 7 that takes up space. Some long reasoning block 8 that takes up space. Some long reasoning block 9 that takes up space.",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {}
+  },
+  {
+    "text": "Rule 1: Always be polite.",
+    "vector": [
+      0.1,
+      0.2
+    ],
+    "metadata": {
+      "type": "semantic"
+    }
+  },
+  {
+    "text": "Fact 1: The sky is blue.",
+    "vector": [
+      0.9,
+      0.8
+    ],
+    "metadata": {
+      "type": "episodic"
+    }
+  },
+  {
+    "text": "Rule 2: Think step by step.",
+    "vector": [
+      0.2,
+      0.3
+    ],
+    "metadata": {
+      "type": "semantic"
+    }
+  }
+]
