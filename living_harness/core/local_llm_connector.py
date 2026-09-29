@@ -2,6 +2,7 @@ import json
 import urllib.request
 import urllib.error
 from typing import Dict, Any, Optional
+from living_harness.core.reasoning_parser import ReasoningParser
 
 class LocalLLMConnector:
     """
@@ -12,12 +13,22 @@ class LocalLLMConnector:
         self.backend = backend.lower()
         if self.backend not in ["ollama", "vllm"]:
             raise ValueError("Supported backends are 'ollama' and 'vllm'")
+        self.last_thought = None
 
     def generate(self, prompt: str, model: str = "llama3", max_tokens: int = 1024, temperature: float = 0.7) -> Optional[str]:
+        self.last_thought = None
         if self.backend == "ollama":
-            return self._generate_ollama(prompt, model, temperature)
+            response_text = self._generate_ollama(prompt, model, temperature)
         elif self.backend == "vllm":
-            return self._generate_vllm(prompt, model, max_tokens, temperature)
+            response_text = self._generate_vllm(prompt, model, max_tokens, temperature)
+        else:
+            return None
+
+        if response_text:
+            thought, final_answer = ReasoningParser.parse(response_text)
+            if thought:
+                self.last_thought = thought
+            return final_answer
         return None
 
     def _generate_ollama(self, prompt: str, model: str, temperature: float) -> Optional[str]:
