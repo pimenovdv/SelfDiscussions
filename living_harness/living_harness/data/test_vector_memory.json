@@ -1,29 +1,28 @@
 [
   {
-    "text": "The quick brown fox jumps over the lazy dog",
+    "text": "Consolidated rule for cluster 0 based on: I learned how to add numbers. | Addition is commutative.",
     "vector": [
-      1.0,
-      0.0,
-      0.0
+      0.27472700497656233,
+      0.5363717716209073,
+      0.7980165382652523
     ],
-    "metadata": {}
+    "metadata": {
+      "type": "semantic",
+      "timestamp": 1790779531.9107661,
+      "importance": 0.8
+    }
   },
   {
-    "text": "A fast brown fox leaped over a sleepy dog",
+    "text": "Consolidated rule for cluster 1 based on: I saw a dog. | Dogs bark.",
     "vector": [
-      0.9,
-      0.1,
-      0.0
+      0.6457576285713854,
+      0.5744031944750998,
+      0.503048760378814
     ],
-    "metadata": {}
-  },
-  {
-    "text": "Artificial intelligence is fascinating",
-    "vector": [
-      0.0,
-      1.0,
-      0.0
-    ],
-    "metadata": {}
+    "metadata": {
+      "type": "semantic",
+      "timestamp": 1790779531.910769,
+      "importance": 0.8
+    }
   }
 ]
