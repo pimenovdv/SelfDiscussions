@@ -62,30 +62,38 @@ class MemoryConsolidator:
         if not self.vector_store:
             return
 
+        # 1. Consolidate episodic memories
         episodic_memories = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") == "episodic"]
+        if episodic_memories:
+            memories_to_consolidate = [{"content": m["text"], "vector": m["vector"]} for m in episodic_memories]
+            abstract_rules = self.consolidate_memories(memories_to_consolidate)
 
-        if not episodic_memories:
-            return
+            # Очищаем старые эпизодические воспоминания
+            self.vector_store.memory = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") != "episodic"]
 
-        # Форматируем данные для consolidate_memories
-        memories_to_consolidate = []
-        for m in episodic_memories:
-            memories_to_consolidate.append({
-                "content": m["text"],
-                "vector": m["vector"]
-            })
+            # Добавляем новые семантические правила
+            for rule in abstract_rules:
+                self.vector_store.add_item(
+                    text=rule["content"],
+                    vector=rule.get("centroid", []),
+                    metadata={"type": "semantic", "timestamp": rule["timestamp"], "importance": rule["importance"]}
+                )
 
-        abstract_rules = self.consolidate_memories(memories_to_consolidate)
+        # 2. Reflect on internal monologue
+        internal_monologues = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") == "internal_monologue"]
+        if internal_monologues:
+            monologues_to_consolidate = [{"content": m["text"], "vector": m["vector"]} for m in internal_monologues]
+            reflections = self.consolidate_memories(monologues_to_consolidate)
 
-        # Очищаем старые эпизодические воспоминания
-        self.vector_store.memory = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") != "episodic"]
+            # Очищаем старые внутренние монологи
+            self.vector_store.memory = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") != "internal_monologue"]
 
-        # Добавляем новые семантические правила
-        for rule in abstract_rules:
-            self.vector_store.add_item(
-                text=rule["content"],
-                vector=rule.get("centroid", []),
-                metadata={"type": "semantic", "timestamp": rule["timestamp"], "importance": rule["importance"]}
-            )
+            # Добавляем рефлексии как мета-знания
+            for reflection in reflections:
+                self.vector_store.add_item(
+                    text=f"Meta-Reflection: {reflection['content']}",
+                    vector=reflection.get("centroid", []),
+                    metadata={"type": "meta_knowledge", "timestamp": reflection["timestamp"], "importance": 0.9}
+                )
 
         self.vector_store._save()
