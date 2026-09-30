@@ -1,32 +1,5 @@
 [
   {
-    "text": "Some long reasoning block 0 that takes up space. Some long reasoning block 1 that takes up space. Some long reasoning block 2 that takes up space. Some long reasoning block 3 that takes up space. Some long reasoning block 4 that takes up space.",
-    "vector": [
-      1.0,
-      0.0,
-      0.0
-    ],
-    "metadata": {}
-  },
-  {
-    "text": "[СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] Some long reasoning block 0 that takes up space. Some long reasoning block 5 that takes up space. Some long reasoning block 6 that takes up space.",
-    "vector": [
-      1.0,
-      0.0,
-      0.0
-    ],
-    "metadata": {}
-  },
-  {
-    "text": "[СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] [СЖАТОЕ ПРОШЛОЕ РАССУЖДЕНИЕ] Some long reasoning block 0 that takes up space. Some long reasoning block 7 that takes up space. Some long reasoning block 8 that takes up space. Some long reasoning block 9 that takes up space.",
-    "vector": [
-      1.0,
-      0.0,
-      0.0
-    ],
-    "metadata": {}
-  },
-  {
     "text": "Rule 1: Always be polite.",
     "vector": [
       0.1,
