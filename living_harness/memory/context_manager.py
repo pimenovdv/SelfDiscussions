@@ -156,6 +156,10 @@ class ContextManager:
             if rules:
                 prompt_parts.append("\n<|rules|>\n" + rules)
 
+            meta = self.retrieve_meta_knowledge(query_vector)
+            if meta:
+                prompt_parts.append("\n<|meta_reflection|>\n" + meta)
+
         prompt_parts.append("\n<|memory|>")
 
         for mem in self.memory:
@@ -187,3 +191,14 @@ class ContextManager:
                 if len(rules) >= top_k:
                     break
         return "\n".join(rules) if rules else ""
+
+    def retrieve_meta_knowledge(self, query_vector: List[float], top_k: int = 1) -> str:
+        """Извлекает релевантные мета-знания (рефлексию над мыслями) в текущий промпт."""
+        results = self.vector_store.search(query_vector, top_k * 5)
+        meta = []
+        for item in results:
+            if item.get("metadata", {}).get("type") == "meta_knowledge":
+                meta.append(f"{item['text']}")
+                if len(meta) >= top_k:
+                    break
+        return "\n".join(meta) if meta else ""
