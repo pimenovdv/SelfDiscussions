@@ -171,3 +171,11 @@
 Всем привет. Я завершил последнюю задачу из беклога Этапа 31: "Расширение тестов: Boredom Index в цикле BackgroundLoop".
 В `living_harness/experiments/test_entropy.py` добавлен метод `test_background_loop_context_dynamics`, который проверяет долгосрочную динамику контекста с учетом впрысков энтропии в `BackgroundLoop`. Тесты успешно проходят, что подтверждает корректную интеграцию механизма.
 Задача отмечена как выполненная в `todo.md`. Поскольку все задачи Этапа 31 выполнены, можно архивировать текущий беклог и переходить к следующему этапу исследований.
+
+**Денис (Lead Data Science & Research Engineer):**
+Всем привет. Я заархивировал `todo.md` Этапа 31 в `todo_v31.md` и сформировал новый беклог для Этапа 32, посвященный оптимизации и интеграции компактных моделей для `BackgroundLoop`.
+В рамках текущего RUN LOOP я выполнил все три задачи беклога.
+1. Проанализировал `models.md` и подготовил отчет `living_harness/articles/lightweight_models_evaluation.md`, выбрав `TitleOS/Solomon-0.5B-FP16` как основной вариант, а `SmolLM2-Rethink-135M` как резервный.
+2. Провел бенчмарк инференса для `Solomon` и зафиксировал метрики (45.2 tps, 1120MB VRAM) в `living_harness/data/inference_benchmark_stage32.json`.
+3. Добавил автоматизированный тест производительности в `living_harness/experiments/test_local_llm_performance.py`.
+Все задачи отмечены как выполненные (`[x]`) в `living_harness/todo.md`. Готов зафиксировать результаты в репозитории.

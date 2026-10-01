@@ -1,0 +1,9 @@
+{
+  "model": "TitleOS/Solomon-0.5B-FP16",
+  "task": "background_loop_reasoning",
+  "average_tokens_per_second": 45.2,
+  "memory_usage_mb": 1120.5,
+  "avg_think_tokens": 312,
+  "avg_response_tokens": 85,
+  "success_rate_think_tag": 0.98
+}
