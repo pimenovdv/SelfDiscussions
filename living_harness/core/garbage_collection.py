@@ -3,6 +3,7 @@ import threading
 from typing import List, Dict, Any
 from living_harness.memory.vector_store import VectorStore
 from living_harness.memory.partitioning import PartitionManager
+from living_harness.core.semantic_autoencoder import SemanticAutoencoderECC
 
 class ColdStorageGC:
     def __init__(self, vector_store: VectorStore, partition_manager: PartitionManager):
@@ -10,6 +11,7 @@ class ColdStorageGC:
         self.partition_manager = partition_manager
         self._stop_event = threading.Event()
         self._thread = None
+        self.autoencoder = SemanticAutoencoderECC()
 
     @property
     def is_running(self):
@@ -23,14 +25,26 @@ class ColdStorageGC:
             self._stop_event.set()
 
     def compress_and_archive(self, cold_memories: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        # Dummy compression for now: just sort by timestamp or keep as is.
-        # Ideally, we would compress semantic duplicates.
-        # For our GC, let's say we remove items that are extremely old and not accessed (if we tracked access).
-        # We'll just return a 'defragmented' list. In a real scenario, this merges vectors.
         defragmented = []
         for mem in cold_memories:
-            # Fake deduplication logic
-            defragmented.append(mem)
+            if "vector" in mem and isinstance(mem["vector"], list):
+                try:
+                    corrected_vector = self.autoencoder.detect_and_correct(mem["vector"])
+                    mem["vector"] = corrected_vector
+                except Exception as e:
+                    pass
+
+                is_duplicate = False
+                for existing_mem in defragmented:
+                    if "vector" in existing_mem:
+                        score = self.vector_store._cosine_similarity(mem["vector"], existing_mem["vector"])
+                        if score > 0.95:
+                            is_duplicate = True
+                            break
+                if not is_duplicate:
+                    defragmented.append(mem)
+            else:
+                defragmented.append(mem)
         return defragmented
 
     def gc_cycle(self):
