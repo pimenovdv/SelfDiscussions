@@ -47,8 +47,18 @@ class ColdStorageGC:
                         threshold = self.get_adaptive_threshold(current_storage_size)
                         if score > threshold:
                             is_duplicate = True
+                            if "metadata" not in existing_mem:
+                                existing_mem["metadata"] = {}
+                            if "importance_weight" not in existing_mem["metadata"]:
+                                existing_mem["metadata"]["importance_weight"] = 1.0
+                            mem_weight = mem.get("metadata", {}).get("importance_weight", 1.0)
+                            existing_mem["metadata"]["importance_weight"] += mem_weight
                             break
                 if not is_duplicate:
+                    if "metadata" not in mem:
+                        mem["metadata"] = {}
+                    if "importance_weight" not in mem["metadata"]:
+                        mem["metadata"]["importance_weight"] = 1.0
                     defragmented.append(mem)
             else:
                 defragmented.append(mem)
