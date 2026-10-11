@@ -24,7 +24,13 @@ class ColdStorageGC:
         else:
             self._stop_event.set()
 
-    def compress_and_archive(self, cold_memories: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+
+    def get_adaptive_threshold(self, current_size: int) -> float:
+        # Base threshold is 0.95. As storage grows to 10000+, it lowers to 0.85
+        decay = (current_size / 10000.0) * 0.1
+        return max(0.85, 0.95 - decay)
+
+    def compress_and_archive(self, cold_memories: List[Dict[str, Any]], current_storage_size: int = 0) -> List[Dict[str, Any]]:
         defragmented = []
         for mem in cold_memories:
             if "vector" in mem and isinstance(mem["vector"], list):
@@ -38,7 +44,8 @@ class ColdStorageGC:
                 for existing_mem in defragmented:
                     if "vector" in existing_mem:
                         score = self.vector_store._cosine_similarity(mem["vector"], existing_mem["vector"])
-                        if score > 0.95:
+                        threshold = self.get_adaptive_threshold(current_storage_size)
+                        if score > threshold:
                             is_duplicate = True
                             break
                 if not is_duplicate:
@@ -63,7 +70,8 @@ class ColdStorageGC:
                 cold_memories.append(m)
 
         if len(cold_memories) > 0:
-            compressed_cold = self.compress_and_archive(cold_memories)
+            current_size = len(self.vector_store.memory)
+            compressed_cold = self.compress_and_archive(cold_memories, current_size)
             self.vector_store.memory = hot_memories + compressed_cold
             self.vector_store._save()
 
