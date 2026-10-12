@@ -64,7 +64,15 @@ class ColdStorageGC:
                 defragmented.append(mem)
         return defragmented
 
+    def apply_weight_decay(self, decay_factor: float = 0.99):
+        for mem in self.vector_store.memory:
+            if "metadata" in mem and "importance_weight" in mem["metadata"]:
+                current_weight = mem["metadata"]["importance_weight"]
+                mem["metadata"]["importance_weight"] = max(1.0, current_weight * decay_factor)
+
     def gc_cycle(self):
+        self.apply_weight_decay()
+
         # Gather cold memories
         current_time = time.time()
         hot_window = self.partition_manager.hot_window_seconds
