@@ -53,8 +53,13 @@ class VectorStore:
         scored_items = []
         for item in self.memory:
             if "vector" in item and item["vector"]:
-                score = self._cosine_similarity(query_vector, item["vector"])
-                scored_items.append({"score": score, "item": item})
+                base_score = self._cosine_similarity(query_vector, item["vector"])
+
+                # Применяем importance_weight, если он есть
+                importance_weight = item.get("metadata", {}).get("importance_weight", 1.0)
+                final_score = base_score * importance_weight
+
+                scored_items.append({"score": final_score, "item": item})
 
         scored_items.sort(key=lambda x: x["score"], reverse=True)
         return [scored["item"] for scored in scored_items[:top_k]]
