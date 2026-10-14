@@ -18,9 +18,9 @@ def test_search_with_importance_weight():
         results = vector_store.search(vector, top_k=3)
 
         assert len(results) == 3
-        assert results[0]["metadata"]["importance_weight"] == 5.0
-        assert results[1]["metadata"]["importance_weight"] == 3.0
-        assert results[2]["metadata"]["importance_weight"] == 1.0
+        assert results[0]["metadata"]["importance_weight"] == 5.1
+        assert results[1]["metadata"]["importance_weight"] == 3.1
+        assert results[2]["metadata"]["importance_weight"] == 1.1
     finally:
         if os.path.exists(db_path):
             os.remove(db_path)

@@ -1,0 +1,8 @@
+# План развития и исследований (TODO) - Этап 43: Использование importance_weight при извлечении контекста
+
+- [x] 1. **Инженерия: Учет importance_weight при поиске**
+  - Внедрить использование `importance_weight` при расчете итогового скора в `living_harness/memory/vector_store.py` (например, путем умножения косинусного сходства на вес). (Реализовано в `living_harness/memory/vector_store.py`)
+- [x] 2. **Эксперимент: Проверка извлечения контекста с учетом весов**
+  - Написать тест, подтверждающий, что элементы с большим `importance_weight` ранжируются выше. (Реализовано в `living_harness/tests/test_search_with_weights.py`)
+- [x] 3. **Аналитический драфт: Влияние весов на релевантность**
+  - Подготовить отчет об эффективности учета `importance_weight` при извлечении контекста. (Реализовано в `living_harness/articles/importance_weight_relevance.md`)

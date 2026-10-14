@@ -62,7 +62,20 @@ class VectorStore:
                 scored_items.append({"score": final_score, "item": item})
 
         scored_items.sort(key=lambda x: x["score"], reverse=True)
-        return [scored["item"] for scored in scored_items[:top_k]]
+
+        top_items = [scored["item"] for scored in scored_items[:top_k]]
+
+        # Подкрепление: увеличиваем importance_weight для извлеченных элементов
+        for item in top_items:
+            if "metadata" not in item:
+                item["metadata"] = {}
+            current_weight = item["metadata"].get("importance_weight", 1.0)
+            item["metadata"]["importance_weight"] = current_weight + 0.1
+
+        if top_items:
+            self._save()
+
+        return top_items
 
     def clear(self):
         self.memory = []
