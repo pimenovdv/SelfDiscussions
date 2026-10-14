@@ -70,7 +70,7 @@ class VectorStore:
             if "metadata" not in item:
                 item["metadata"] = {}
             current_weight = item["metadata"].get("importance_weight", 1.0)
-            item["metadata"]["importance_weight"] = current_weight + 0.1
+            item["metadata"]["importance_weight"] = min(current_weight + 0.1, 5.0)
 
         if top_items:
             self._save()
