@@ -1,6 +1,7 @@
 import json
 import os
 import math
+import time
 from typing import List, Dict, Any, Optional
 
 class VectorStore:
@@ -30,6 +31,8 @@ class VectorStore:
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
+        if "last_accessed" not in metadata:
+            metadata["last_accessed"] = time.time()
         item = {
             "text": text,
             "vector": vector,
@@ -71,6 +74,7 @@ class VectorStore:
                 item["metadata"] = {}
             current_weight = item["metadata"].get("importance_weight", 1.0)
             item["metadata"]["importance_weight"] = min(current_weight + 0.1, 5.0)
+            item["metadata"]["last_accessed"] = time.time()
 
         if top_items:
             self._save()
