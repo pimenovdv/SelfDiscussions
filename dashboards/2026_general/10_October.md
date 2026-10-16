@@ -7,3 +7,4 @@
 | 13.10.26 | 33 | 27 | 70 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
 | 14.10.26 | 34 | 27 | 71 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
 | 15.10.26 | 34 | 27 | 71 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
+| 16.10.26 | 35 | 27 | 71 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
