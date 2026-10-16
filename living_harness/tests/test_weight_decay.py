@@ -14,7 +14,7 @@ def test_apply_weight_decay(tmp_path):
     vs.add_item("doc2", [0.0, 1.0], {"importance_weight": 1.2})
     vs.add_item("doc3", [0.5, 0.5], {})  # No weight
 
-    gc.apply_weight_decay(decay_factor=0.8)
+    gc.apply_weight_decay(decay_factor=0.8, time_based=False)
 
     assert vs.memory[0]["metadata"]["importance_weight"] == 4.0
     assert vs.memory[1]["metadata"]["importance_weight"] == 1.0  # Clipped to 1.0
@@ -42,6 +42,9 @@ def test_gc_cycle_memory_freeing(tmp_path, monkeypatch):
     assert len(vs.memory) == 1
 
     # The weight should be the sum of decayed weights
-    # Original: doc1 (2.0), doc2 (3.0). Decayed by 0.99: 1.98, 2.97. Sum: 4.95
+    # Original: doc1 (2.0), doc2 (3.0). With time_based decay very small time has passed
+    # so factor is max(0.1, 1 - decay_rate * small_days) ~ 1.0
+    # Decayed: 2.0 * ~1.0 = 2.0, 3.0 * ~1.0 = 3.0
+    # Sum ~ 5.0
     weight = vs.memory[0]["metadata"]["importance_weight"]
-    assert abs(weight - 4.95) < 0.001
+    assert pytest.approx(weight, 0.001) == 5.0

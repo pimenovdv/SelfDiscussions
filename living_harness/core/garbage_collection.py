@@ -64,14 +64,26 @@ class ColdStorageGC:
                 defragmented.append(mem)
         return defragmented
 
-    def apply_weight_decay(self, decay_factor: float = 0.99):
+    def apply_weight_decay(self, decay_factor: float = 0.99, time_based: bool = False, decay_rate_per_day: float = 0.1):
+        current_time = time.time()
         for mem in self.vector_store.memory:
             if "metadata" in mem and "importance_weight" in mem["metadata"]:
                 current_weight = mem["metadata"]["importance_weight"]
-                mem["metadata"]["importance_weight"] = max(1.0, current_weight * decay_factor)
+                if time_based and "last_accessed" in mem["metadata"]:
+                    # Calculate time passed since last decay, or if not present, since last_accessed
+                    last_decayed = max(mem["metadata"].get("last_decayed", 0), mem["metadata"]["last_accessed"])
+                    days_passed_since_decay = (current_time - last_decayed) / (24 * 3600)
+
+                    if days_passed_since_decay > 0:
+                        # Apply decay proportional to the time passed since last decay
+                        time_decay_factor = max(0.1, 1.0 - (decay_rate_per_day * days_passed_since_decay))
+                        mem["metadata"]["importance_weight"] = max(1.0, current_weight * time_decay_factor)
+                        mem["metadata"]["last_decayed"] = current_time
+                else:
+                    mem["metadata"]["importance_weight"] = max(1.0, current_weight * decay_factor)
 
     def gc_cycle(self):
-        self.apply_weight_decay()
+        self.apply_weight_decay(time_based=True)
 
         # Gather cold memories
         current_time = time.time()
