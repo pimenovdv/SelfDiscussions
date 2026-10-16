@@ -54,13 +54,21 @@ class VectorStore:
     def search(self, query_vector: List[float], top_k: int = 3) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
         scored_items = []
+        current_time = time.time()
         for item in self.memory:
             if "vector" in item and item["vector"]:
                 base_score = self._cosine_similarity(query_vector, item["vector"])
 
                 # Применяем importance_weight, если он есть
                 importance_weight = item.get("metadata", {}).get("importance_weight", 1.0)
-                final_score = base_score * importance_weight
+
+                # Применяем буст за свежесть (Recency)
+                last_accessed = item.get("metadata", {}).get("last_accessed", current_time)
+                days_passed = max(0.0, (current_time - last_accessed) / (24.0 * 3600.0))
+                # Например, буст до 1.2 для совсем свежих, стремящийся к 1.0 со временем
+                recency_boost = 1.0 + 0.2 * math.exp(-days_passed)
+
+                final_score = base_score * importance_weight * recency_boost
 
                 scored_items.append({"score": final_score, "item": item})
 
