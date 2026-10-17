@@ -68,7 +68,7 @@ class VectorStore:
                 # Например, буст до 1.2 для совсем свежих, стремящийся к 1.0 со временем
                 recency_boost = 1.0 + 0.2 * math.exp(-days_passed)
 
-                final_score = base_score * importance_weight * recency_boost
+                final_score = base_score * math.log1p(importance_weight) * recency_boost
 
                 scored_items.append({"score": final_score, "item": item})
 
