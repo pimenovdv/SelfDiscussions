@@ -4,5 +4,5 @@
   - В `living_harness/memory/vector_store.py` обновить метод `search`. Итоговый скор должен рассчитываться с учетом буста за свежесть (Recency), основанного на метке `last_accessed`.
 - [x] 2. **Эксперимент: Проверка влияния свежести**
   - Написать тест (`living_harness/tests/test_recency_boost.py`), проверяющий, что векторы с более новым `last_accessed` ранжируются выше при прочих равных.
-- [ ] 3. **Исследование: Балансировка Importance и Recency**
+- [x] 3. **Исследование: Балансировка Importance и Recency**
   - Сформировать драфт статьи (`living_harness/articles/importance_vs_recency_balance.md`), анализирующий совместное влияние веса и времени на релевантность контекста.
