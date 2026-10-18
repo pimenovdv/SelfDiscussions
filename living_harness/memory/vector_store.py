@@ -89,6 +89,28 @@ class VectorStore:
 
         return top_items
 
+
+    def decay_weights(self, decay_rate: float = 0.1, days_threshold: float = 1.0):
+        """Снижает importance_weight для давно не использовавшихся элементов."""
+        current_time = time.time()
+        changed = False
+        for item in self.memory:
+            metadata = item.get("metadata")
+            if not metadata:
+                continue
+            last_accessed = metadata.get("last_accessed", current_time)
+            days_passed = max(0.0, (current_time - last_accessed) / (24.0 * 3600.0))
+            if days_passed > days_threshold:
+                current_weight = metadata.get("importance_weight", 1.0)
+                if current_weight > 1.0:
+                    decay_factor = math.exp(-decay_rate * (days_passed - days_threshold))
+                    new_weight = 1.0 + (current_weight - 1.0) * decay_factor
+                    metadata["importance_weight"] = max(1.0, new_weight)
+                    changed = True
+
+        if changed:
+            self._save()
+
     def clear(self):
         self.memory = []
         self._save()
