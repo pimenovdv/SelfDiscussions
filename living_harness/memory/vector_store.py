@@ -27,13 +27,14 @@ class VectorStore:
         with open(self.db_path, "w", encoding="utf-8") as f:
             json.dump(self.memory, f, ensure_ascii=False, indent=2)
 
-    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None):
+    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general"):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
         if "last_accessed" not in metadata:
             metadata["last_accessed"] = time.time()
         item = {
+            "domain": domain,
             "text": text,
             "vector": vector,
             "metadata": metadata
@@ -51,11 +52,13 @@ class VectorStore:
             return 0.0
         return dot_product / (norm_v1 * norm_v2)
 
-    def search(self, query_vector: List[float], top_k: int = 3) -> List[Dict[str, Any]]:
+    def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[str] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
         scored_items = []
         current_time = time.time()
         for item in self.memory:
+            if domain is not None and item.get("domain", "general") != domain:
+                continue
             if "vector" in item and item["vector"]:
                 base_score = self._cosine_similarity(query_vector, item["vector"])
 
