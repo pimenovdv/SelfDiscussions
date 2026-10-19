@@ -9,3 +9,4 @@
 | 15.10.26 | 34 | 27 | 71 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
 | 16.10.26 | 35 | 27 | 71 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
 | 18.10.26 | 36 | 28 | 72 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
+| 19.10.26 | 36 | 28 | 72 | ai, biology, computer_science, physics, psychology | чтобы, должны, просто, можем, территорией |
