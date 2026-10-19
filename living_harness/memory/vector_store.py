@@ -2,7 +2,7 @@ import json
 import os
 import math
 import time
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 
 class VectorStore:
     def __init__(self, db_path: str = "living_harness/data/vector_memory.json"):
@@ -52,13 +52,17 @@ class VectorStore:
             return 0.0
         return dot_product / (norm_v1 * norm_v2)
 
-    def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[str] = None) -> List[Dict[str, Any]]:
+    def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
         scored_items = []
         current_time = time.time()
         for item in self.memory:
-            if domain is not None and item.get("domain", "general") != domain:
-                continue
+            item_domain = item.get("domain", "general")
+            if domain is not None:
+                if isinstance(domain, str) and item_domain != domain:
+                    continue
+                elif isinstance(domain, list) and item_domain not in domain:
+                    continue
             if "vector" in item and item["vector"]:
                 base_score = self._cosine_similarity(query_vector, item["vector"])
 
