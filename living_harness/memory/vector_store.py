@@ -2,12 +2,15 @@ import json
 import os
 import math
 import time
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Tuple
 
 class VectorStore:
     def __init__(self, db_path: str = "living_harness/data/vector_memory.json"):
         self.db_path = db_path
         self.memory: List[Dict[str, Any]] = []
+        # Cache format: query_tuple -> (timestamp, result_list)
+        self._search_cache: Dict[Tuple[Any, ...], Tuple[float, List[Dict[str, Any]]]] = {}
+        self._cache_ttl = 60.0 # seconds
         self._load()
 
     def _load(self):
@@ -40,6 +43,7 @@ class VectorStore:
             "metadata": metadata
         }
         self.memory.append(item)
+        self._search_cache.clear() # Invalidate cache on new item
         self._save()
 
     def _cosine_similarity(self, v1: List[float], v2: List[float]) -> float:
@@ -54,8 +58,34 @@ class VectorStore:
 
     def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
-        scored_items = []
+
+        # Serialize domain for cache key
+        if domain is None:
+            domain_key = None
+        elif isinstance(domain, str):
+            domain_key = domain
+        else:
+            domain_key = tuple(sorted(domain))
+
+        cache_key = (tuple(query_vector), top_k, domain_key)
         current_time = time.time()
+
+        # Check cache
+        if cache_key in self._search_cache:
+            cache_time, cached_results = self._search_cache[cache_key]
+            if current_time - cache_time < self._cache_ttl:
+                # Update reinforcement even if cached
+                for item in cached_results:
+                    if "metadata" not in item:
+                        item["metadata"] = {}
+                    current_weight = item["metadata"].get("importance_weight", 1.0)
+                    item["metadata"]["importance_weight"] = min(current_weight + 0.1, 5.0)
+                    item["metadata"]["last_accessed"] = current_time
+                if cached_results:
+                    self._save()
+                return cached_results
+
+        scored_items = []
         for item in self.memory:
             item_domain = item.get("domain", "general")
             if domain is not None:
@@ -89,10 +119,13 @@ class VectorStore:
                 item["metadata"] = {}
             current_weight = item["metadata"].get("importance_weight", 1.0)
             item["metadata"]["importance_weight"] = min(current_weight + 0.1, 5.0)
-            item["metadata"]["last_accessed"] = time.time()
+            item["metadata"]["last_accessed"] = current_time
 
         if top_items:
             self._save()
+
+        # Update cache
+        self._search_cache[cache_key] = (current_time, top_items)
 
         return top_items
 
@@ -120,4 +153,5 @@ class VectorStore:
 
     def clear(self):
         self.memory = []
+        self._search_cache.clear()
         self._save()
