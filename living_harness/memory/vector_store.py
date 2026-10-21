@@ -2,14 +2,17 @@ import json
 import os
 import math
 import time
+from collections import OrderedDict
 from typing import List, Dict, Any, Optional, Union, Tuple
 
 class VectorStore:
-    def __init__(self, db_path: str = "living_harness/data/vector_memory.json"):
+    def __init__(self, db_path: str = "living_harness/data/vector_memory.json", max_cache_size: int = 100):
         self.db_path = db_path
+        self.max_cache_size = max_cache_size
         self.memory: List[Dict[str, Any]] = []
         # Cache format: query_tuple -> (timestamp, result_list)
-        self._search_cache: Dict[Tuple[Any, ...], Tuple[float, List[Dict[str, Any]]]] = {}
+        # Using OrderedDict to implement LRU Cache
+        self._search_cache: OrderedDict[Tuple[Any, ...], Tuple[float, List[Dict[str, Any]]]] = OrderedDict()
         self._cache_ttl = 60.0 # seconds
         self._load()
 
@@ -74,6 +77,8 @@ class VectorStore:
         if cache_key in self._search_cache:
             cache_time, cached_results = self._search_cache[cache_key]
             if current_time - cache_time < self._cache_ttl:
+                # Update cache item order for LRU
+                self._search_cache.move_to_end(cache_key)
                 # Update reinforcement even if cached
                 for item in cached_results:
                     if "metadata" not in item:
@@ -126,6 +131,9 @@ class VectorStore:
 
         # Update cache
         self._search_cache[cache_key] = (current_time, top_items)
+        # Apply LRU max_size limit
+        if len(self._search_cache) > self.max_cache_size:
+            self._search_cache.popitem(last=False)
 
         return top_items
 
