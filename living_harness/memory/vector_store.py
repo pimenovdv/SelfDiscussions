@@ -33,16 +33,63 @@ class VectorStore:
         with open(self.db_path, "w", encoding="utf-8") as f:
             json.dump(self.memory, f, ensure_ascii=False, indent=2)
 
-    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general"):
+    def _quantize_vector(self, vector: List[float], num_bits: int = 8) -> List[int]:
+        """Квантует вектор, сохраняя только num_bits бит (в данном случае просто в int от 0 до 255).
+        Обратная совместимость: если значение уже int, оставляем.
+        В реальном применении квантование должно сохранять масштаб, но для упрощения
+        здесь мы приводим значения к диапазону 0-255 на основе min-max нормализации.
+        """
+        if not vector:
+            return []
+
+        # Простая проверка - если вектор уже состоит из интов, не квантуем повторно
+        if all(isinstance(v, int) for v in vector):
+            return vector
+
+        min_v = min(vector)
+        max_v = max(vector)
+
+        if max_v == min_v:
+            return [0] * len(vector)
+
+        # Нормализуем в диапазон [0, 2^num_bits - 1]
+        scale = (2**num_bits - 1) / (max_v - min_v)
+        quantized = [int(round((v - min_v) * scale)) for v in vector]
+        return quantized
+
+    def _dequantize_vector(self, q_vector: List[int], min_v: float, max_v: float, num_bits: int = 8) -> List[float]:
+        """Восстанавливает исходный вектор из квантованного."""
+        if not q_vector:
+            return []
+
+        if max_v == min_v:
+            return [min_v] * len(q_vector)
+
+        scale = (max_v - min_v) / (2**num_bits - 1)
+        dequantized = [min_v + (v * scale) for v in q_vector]
+        return dequantized
+
+    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
         if "last_accessed" not in metadata:
             metadata["last_accessed"] = time.time()
+
+        stored_vector = vector
+
+        if quantize and vector:
+            min_v = min(vector)
+            max_v = max(vector)
+            stored_vector = self._quantize_vector(vector)
+            metadata["is_quantized"] = True
+            metadata["quantize_min"] = min_v
+            metadata["quantize_max"] = max_v
+
         item = {
             "domain": domain,
             "text": text,
-            "vector": vector,
+            "vector": stored_vector,
             "metadata": metadata
         }
         self.memory.append(item)
@@ -58,6 +105,19 @@ class VectorStore:
         if norm_v1 == 0.0 or norm_v2 == 0.0:
             return 0.0
         return dot_product / (norm_v1 * norm_v2)
+
+    def _get_float_vector(self, item: Dict[str, Any]) -> List[float]:
+        """Возвращает вектор в формате float. Декодирует если нужно."""
+        vector = item.get("vector", [])
+        metadata = item.get("metadata", {})
+
+        if metadata.get("is_quantized", False):
+            return self._dequantize_vector(
+                vector,
+                metadata.get("quantize_min", 0.0),
+                metadata.get("quantize_max", 1.0)
+            )
+        return vector
 
     def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
@@ -99,7 +159,8 @@ class VectorStore:
                 elif isinstance(domain, list) and item_domain not in domain:
                     continue
             if "vector" in item and item["vector"]:
-                base_score = self._cosine_similarity(query_vector, item["vector"])
+                float_vector = self._get_float_vector(item)
+                base_score = self._cosine_similarity(query_vector, float_vector)
 
                 # Применяем importance_weight, если он есть
                 importance_weight = item.get("metadata", {}).get("importance_weight", 1.0)
