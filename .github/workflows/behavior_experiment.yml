@@ -1,0 +1,35 @@
+name: Run Auto Behavior Change Experiment
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-experiment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run behavior change script
+        run: python living_harness/auto_behavior_change.py
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add prompts/ living_harness/behavior_state.json knowledge_base/behavior_experiments.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update behavior experiment state"
+            git push
+          else
+            echo "No changes to commit."
+          fi
