@@ -224,3 +224,29 @@ class VectorStore:
         self.memory = []
         self._search_cache.clear()
         self._save()
+
+    def dynamic_quantize(self, threshold: float = 2.0):
+        """
+        Проходит по всем элементам памяти. Если importance_weight меньше threshold
+        и вектор еще не квантован, квантует его.
+        Элементы с весом >= threshold остаются в float.
+        """
+        changed = False
+        for item in self.memory:
+            metadata = item.get("metadata", {})
+            weight = metadata.get("importance_weight", 1.0)
+            is_quantized = metadata.get("is_quantized", False)
+
+            if weight < threshold and not is_quantized:
+                vector = item.get("vector", [])
+                if vector:
+                    min_v = min(vector)
+                    max_v = max(vector)
+                    item["vector"] = self._quantize_vector(vector)
+                    item["metadata"]["is_quantized"] = True
+                    item["metadata"]["quantize_min"] = min_v
+                    item["metadata"]["quantize_max"] = max_v
+                    changed = True
+
+        if changed:
+            self._save()
