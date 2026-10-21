@@ -62,6 +62,11 @@ class MemoryConsolidator:
         if not self.vector_store:
             return
 
+
+        # 0. Decay and quantize
+        self.vector_store.decay_weights()
+        self.vector_store.dynamic_quantize()
+
         # 1. Consolidate episodic memories
         episodic_memories = [m for m in self.vector_store.memory if m.get("metadata", {}).get("type") == "episodic"]
         if episodic_memories:
