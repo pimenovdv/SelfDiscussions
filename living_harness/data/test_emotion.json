@@ -1,0 +1,30 @@
+[
+  {
+    "domain": "general",
+    "text": "Happy memory",
+    "vector": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "metadata": {
+      "last_accessed": 1792646348.6378136,
+      "emotion": "happy",
+      "importance_weight": 1.2000000000000002
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Sad memory",
+    "vector": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "metadata": {
+      "last_accessed": 1792646348.6378136,
+      "emotion": "sad",
+      "importance_weight": 1.2000000000000002
+    }
+  }
+]
