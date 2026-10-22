@@ -325,3 +325,21 @@ class VectorStore:
         # Find the domain with the highest transition count
         next_domain = max(self.transitions[current_domain].items(), key=lambda x: x[1])[0]
         return next_domain
+
+    def prefetch_predicted_domain(self, current_domain: str, top_k: int = 5):
+        """
+        Предзагружает данные предсказанного домена в кэш.
+        """
+        next_domain = self.predict_next_domain(current_domain)
+        if not next_domain:
+            return
+
+        # Для прогрева кэша выполняем поиск с "нулевым" вектором
+        dummy_vector = []
+        for item in self.memory:
+            if item.get("domain") == next_domain and item.get("vector"):
+                dummy_vector = [0.0] * len(item["vector"])
+                break
+
+        if dummy_vector:
+            self.search(query_vector=dummy_vector, top_k=top_k, domain=next_domain)
