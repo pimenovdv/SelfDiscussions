@@ -1,0 +1,33 @@
+{
+  "model_simulated": "Tencent/Hunyuan-0.5B-Instruct",
+  "dataset_size": 3,
+  "execution_time_seconds": 0.00040221214294433594,
+  "avg_surprise_score": 0.9983333333333334,
+  "success_rate": 1.0,
+  "results": [
+    {
+      "query": "What is in the image?",
+      "image": "https://example.com/cat.jpg",
+      "extracted_signals": 2,
+      "surprise_score": 1.0,
+      "response": "A cat",
+      "success": true
+    },
+    {
+      "query": "Is this a dog?",
+      "image": "https://example.com/dog.jpg",
+      "extracted_signals": 2,
+      "surprise_score": 0.995,
+      "response": "Yes",
+      "success": true
+    },
+    {
+      "query": "What color is the car?",
+      "image": "https://example.com/car.png",
+      "extracted_signals": 2,
+      "surprise_score": 1.0,
+      "response": "Red",
+      "success": true
+    }
+  ]
+}

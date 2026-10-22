@@ -1,4 +1,5 @@
 import json
+import re
 
 class MultimodalProcessor:
     def __init__(self):
@@ -34,3 +35,26 @@ class MultimodalProcessor:
             total_surprise += processed['simulated_entropy']
 
         return min(total_surprise, 1.0) # Нормализация
+
+    def extract_image_links(self, text: str) -> list:
+        """
+        Извлекает ссылки на изображения из текстового запроса.
+        """
+        pattern = r'(https?://[^\s]+(?:jpg|jpeg|png|gif|webp))'
+        return re.findall(pattern, text, re.IGNORECASE)
+
+    def process_text_query(self, text: str) -> dict:
+        """
+        Обработка текстового запроса, содержащего ссылки на изображения.
+        """
+        image_links = self.extract_image_links(text)
+        signals = [{"modality": "text", "data": text}]
+        for link in image_links:
+            signals.append({"modality": "image", "data": link})
+
+        return {
+            "text": text,
+            "image_links": image_links,
+            "signals": signals,
+            "multimodal_surprise": self.calculate_multimodal_surprise(signals)
+        }

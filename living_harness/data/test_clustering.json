@@ -1,0 +1,150 @@
+[
+  {
+    "domain": "general",
+    "text": "Cat 0",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6833334
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Dog 0",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6837254
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Cat 1",
+    "vector": [
+      1.0,
+      0.1,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6840637
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Dog 1",
+    "vector": [
+      0.0,
+      1.0,
+      0.1
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6844106
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Cat 2",
+    "vector": [
+      1.0,
+      0.2,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.684777
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Dog 2",
+    "vector": [
+      0.0,
+      1.0,
+      0.2
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6851335
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Cat 3",
+    "vector": [
+      1.0,
+      0.30000000000000004,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6855843
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Dog 3",
+    "vector": [
+      0.0,
+      1.0,
+      0.30000000000000004
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6860285
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Cat 4",
+    "vector": [
+      1.0,
+      0.4,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6864555
+    }
+  },
+  {
+    "domain": "general",
+    "text": "Dog 4",
+    "vector": [
+      0.0,
+      1.0,
+      0.4
+    ],
+    "metadata": {
+      "last_accessed": 1792630073.6869607
+    }
+  },
+  {
+    "domain": "abstract",
+    "text": "Abstract Concept: cluster_0",
+    "vector": [
+      0.0,
+      1.0,
+      0.20000000000000004
+    ],
+    "metadata": {
+      "is_abstract": true,
+      "cluster_id": 0,
+      "last_accessed": 1792630073.7415946
+    }
+  },
+  {
+    "domain": "abstract",
+    "text": "Abstract Concept: cluster_1",
+    "vector": [
+      1.0,
+      0.19999999999999996,
+      0.0
+    ],
+    "metadata": {
+      "is_abstract": true,
+      "cluster_id": 1,
+      "last_accessed": 1792630073.7420807
+    }
+  }
+]

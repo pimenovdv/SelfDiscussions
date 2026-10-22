@@ -3,6 +3,8 @@ import os
 import math
 import time
 from collections import OrderedDict
+from sklearn.cluster import KMeans
+import numpy as np
 from typing import List, Dict, Any, Optional, Union, Tuple
 
 class VectorStore:
@@ -69,12 +71,14 @@ class VectorStore:
         dequantized = [min_v + (v * scale) for v in q_vector]
         return dequantized
 
-    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False):
+    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
         if "last_accessed" not in metadata:
             metadata["last_accessed"] = time.time()
+        if emotion:
+            metadata["emotion"] = emotion
 
         stored_vector = vector
 
@@ -119,7 +123,7 @@ class VectorStore:
             )
         return vector
 
-    def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None) -> List[Dict[str, Any]]:
+    def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None, emotional_state: Optional[str] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
 
         # Serialize domain for cache key
@@ -130,7 +134,7 @@ class VectorStore:
         else:
             domain_key = tuple(sorted(domain))
 
-        cache_key = (tuple(query_vector), top_k, domain_key)
+        cache_key = (tuple(query_vector), top_k, domain_key, emotional_state)
         current_time = time.time()
 
         # Check cache
@@ -172,6 +176,9 @@ class VectorStore:
                 recency_boost = 1.0 + 0.2 * math.exp(-days_passed)
 
                 final_score = base_score * math.log1p(importance_weight) * recency_boost
+
+                if emotional_state and emotional_state == item.get("metadata", {}).get("emotion"):
+                    final_score *= 1.2 # Эмоциональный резонанс
 
                 scored_items.append({"score": final_score, "item": item})
 
@@ -250,3 +257,46 @@ class VectorStore:
 
         if changed:
             self._save()
+
+
+    def cluster_and_abstract(self, n_clusters: int = 3):
+        """
+        Группирует существующие в памяти (не квантованные) векторы
+        и создает новые элементы - 'абстракции' (центроиды кластеров).
+        """
+        float_vectors = []
+        indices = []
+        for i, item in enumerate(self.memory):
+            meta = item.get("metadata", {})
+            if not meta.get("is_quantized", False) and not meta.get("is_abstract", False):
+                vec = item.get("vector")
+                if vec:
+                    float_vectors.append(vec)
+                    indices.append(i)
+
+        if len(float_vectors) < n_clusters:
+            return # Недостаточно данных для кластеризации
+
+        X = np.array(float_vectors)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init="auto").fit(X)
+        centroids = kmeans.cluster_centers_
+
+        for i, centroid in enumerate(centroids):
+            abstract_text = f"Abstract Concept: cluster_{i}"
+            # Проверяем, нет ли уже такого абстрактного концепта, если есть, обновляем
+            existing_item = None
+            for item in self.memory:
+                if item.get("text") == abstract_text and item.get("metadata", {}).get("is_abstract"):
+                    existing_item = item
+                    break
+
+            if existing_item:
+                existing_item["vector"] = centroid.tolist()
+                self._save()
+            else:
+                self.add_item(
+                    text=abstract_text,
+                    vector=centroid.tolist(),
+                    metadata={"is_abstract": True, "cluster_id": i},
+                    domain="abstract"
+                )

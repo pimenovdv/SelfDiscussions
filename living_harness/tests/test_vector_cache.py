@@ -28,7 +28,7 @@ def test_vector_cache():
     assert len(results1) == 10
 
     # Verify cache is populated
-    cache_key = (tuple(query), 10, "test")
+    cache_key = (tuple(query), 10, "test", None)
     assert cache_key in store._search_cache
 
     # Second search, should use cache
@@ -84,7 +84,7 @@ def test_cache_eviction_lru():
     assert len(store._search_cache) == 5
 
     first_query = tuple(queries[0])
-    first_cache_key = (first_query, 3, "test")
+    first_cache_key = (first_query, 3, "test", None)
     assert first_cache_key in store._search_cache
 
     # Do a 6th search with a new query to evict the first one
@@ -96,7 +96,7 @@ def test_cache_eviction_lru():
 
     # Check that LRU works: access the 2nd query to make it newest
     second_query = tuple(queries[1])
-    second_cache_key = (second_query, 3, "test")
+    second_cache_key = (second_query, 3, "test", None)
     store.search(query_vector=list(second_query), top_k=3, domain="test")
 
     # Now do a 7th search to evict the oldest one (which is now the 3rd query)
@@ -107,7 +107,7 @@ def test_cache_eviction_lru():
     assert second_cache_key in store._search_cache # 2nd query is kept
 
     third_query = tuple(queries[2])
-    third_cache_key = (third_query, 3, "test")
+    third_cache_key = (third_query, 3, "test", None)
     assert third_cache_key not in store._search_cache # 3rd query is evicted
 
     store.clear()
