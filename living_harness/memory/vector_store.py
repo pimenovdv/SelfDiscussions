@@ -16,6 +16,8 @@ class VectorStore:
         # Using OrderedDict to implement LRU Cache
         self._search_cache: OrderedDict[Tuple[Any, ...], Tuple[float, List[Dict[str, Any]]]] = OrderedDict()
         self._cache_ttl = 60.0 # seconds
+        self.transitions: Dict[str, Dict[str, int]] = {}
+        self.last_query_domain: Optional[str] = None
         self._load()
 
     def _load(self):
@@ -125,6 +127,20 @@ class VectorStore:
 
     def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None, emotional_state: Optional[str] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
+
+        # Track domain transitions for proactive prediction
+        current_domain = None
+        if isinstance(domain, str):
+            current_domain = domain
+        elif isinstance(domain, list) and len(domain) > 0:
+            current_domain = domain[0] # Simplification
+
+        if self.last_query_domain and current_domain:
+            if self.last_query_domain not in self.transitions:
+                self.transitions[self.last_query_domain] = {}
+            self.transitions[self.last_query_domain][current_domain] = self.transitions[self.last_query_domain].get(current_domain, 0) + 1
+
+        self.last_query_domain = current_domain
 
         # Serialize domain for cache key
         if domain is None:
@@ -300,3 +316,12 @@ class VectorStore:
                     metadata={"is_abstract": True, "cluster_id": i},
                     domain="abstract"
                 )
+
+    def predict_next_domain(self, current_domain: str) -> Optional[str]:
+        """Предсказывает наиболее вероятный следующий домен запроса на основе истории переходов."""
+        if current_domain not in self.transitions or not self.transitions[current_domain]:
+            return None
+
+        # Find the domain with the highest transition count
+        next_domain = max(self.transitions[current_domain].items(), key=lambda x: x[1])[0]
+        return next_domain
