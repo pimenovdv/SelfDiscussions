@@ -8,6 +8,34 @@ import numpy as np
 from typing import List, Dict, Any, Optional, Union, Tuple
 
 class VectorStore:
+    def identify_curiosity_targets(self) -> List[str]:
+        nodes_set = set()
+        in_degrees = {}
+        out_degrees = {}
+
+        for item in self.memory:
+            domain = item.get("domain", "general")
+            nodes_set.add(domain)
+
+        for node in nodes_set:
+            in_degrees[node] = 0
+            out_degrees[node] = 0
+
+        for source, targets in self.transitions.items():
+            nodes_set.add(source)
+            for target, weight in targets.items():
+                nodes_set.add(target)
+                out_degrees[source] = out_degrees.get(source, 0) + weight
+                in_degrees[target] = in_degrees.get(target, 0) + weight
+
+        curiosity_targets = []
+        for node in nodes_set:
+            total_degree = in_degrees.get(node, 0) + out_degrees.get(node, 0)
+            if total_degree < 2:
+                curiosity_targets.append(node)
+
+        return curiosity_targets
+
     def __init__(self, db_path: str = "living_harness/data/vector_memory.json", max_cache_size: int = 100):
         self.db_path = db_path
         self.max_cache_size = max_cache_size
@@ -369,3 +397,25 @@ class VectorStore:
 
         if dummy_vector:
             self.search(query_vector=dummy_vector, top_k=top_k, domain=next_domain)
+
+    def calculate_domain_entropy(self, domain: str) -> float:
+        """
+        Оценивает дисперсию (разброс) векторов внутри домена как прокси-метрику информационной энтропии.
+        Если домен содержит менее 2 элементов, энтропия считается 0.0.
+        """
+        float_vectors = []
+        for item in self.memory:
+            if item.get("domain") == domain:
+                vec = self._get_float_vector(item)
+                if vec:
+                    float_vectors.append(vec)
+
+        if len(float_vectors) < 2:
+            return 0.0
+
+        X = np.array(float_vectors)
+        # Calculate variance along each dimension, then take the mean variance across dimensions
+        variances = np.var(X, axis=0)
+        mean_variance = float(np.mean(variances))
+
+        return mean_variance
