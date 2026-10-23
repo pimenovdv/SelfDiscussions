@@ -317,6 +317,32 @@ class VectorStore:
                     domain="abstract"
                 )
 
+
+    def export_domain_graph(self) -> Dict[str, Any]:
+        """
+        Экспортирует матрицу переходов между доменами в формате графа
+        (node-link data structure, совместимом с NetworkX).
+        """
+        nodes_set = set()
+        for source, targets in self.transitions.items():
+            nodes_set.add(source)
+            for target in targets.keys():
+                nodes_set.add(target)
+
+        nodes = [{"id": node} for node in nodes_set]
+        links = []
+        for source, targets in self.transitions.items():
+            for target, weight in targets.items():
+                links.append({"source": source, "target": target, "weight": weight})
+
+        return {
+            "directed": True,
+            "multigraph": False,
+            "graph": {},
+            "nodes": nodes,
+            "edges": links
+        }
+
     def predict_next_domain(self, current_domain: str) -> Optional[str]:
         """Предсказывает наиболее вероятный следующий домен запроса на основе истории переходов."""
         if current_domain not in self.transitions or not self.transitions[current_domain]:
