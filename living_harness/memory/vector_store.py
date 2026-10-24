@@ -414,6 +414,73 @@ class VectorStore:
         if len(self.memory) < initial_count:
             self._save()
 
+    def consolidate_memory(self, similarity_threshold: float = 0.85):
+        """
+        Объединяет схожие абстрактные концепты в один. Если косинусное расстояние между
+        двумя абстракциями больше similarity_threshold, они сливаются: их векторы
+        усредняются, веса складываются, а старые узлы удаляются.
+        """
+        abstract_items = [
+            (i, item) for i, item in enumerate(self.memory)
+            if item.get("metadata", {}).get("is_abstract", False)
+        ]
+
+        if len(abstract_items) < 2:
+            return
+
+        to_remove = set()
+        new_items = []
+
+        # Простой O(N^2) поиск пар для консолидации (можно оптимизировать)
+        for idx1, (mem_idx1, item1) in enumerate(abstract_items):
+            if mem_idx1 in to_remove:
+                continue
+
+            for idx2 in range(idx1 + 1, len(abstract_items)):
+                mem_idx2, item2 = abstract_items[idx2]
+                if mem_idx2 in to_remove:
+                    continue
+
+                vec1 = self._get_float_vector(item1)
+                vec2 = self._get_float_vector(item2)
+
+                if not vec1 or not vec2:
+                    continue
+
+                sim = self._cosine_similarity(vec1, vec2)
+
+                if sim >= similarity_threshold:
+                    # Консолидация!
+                    to_remove.add(mem_idx1)
+                    to_remove.add(mem_idx2)
+
+                    # Усредняем векторы
+                    new_vec = [(v1 + v2) / 2.0 for v1, v2 in zip(vec1, vec2)]
+
+                    # Суммируем веса, но ограничиваем максимумом (например, 10.0)
+                    weight1 = item1.get("metadata", {}).get("importance_weight", 1.0)
+                    weight2 = item2.get("metadata", {}).get("importance_weight", 1.0)
+                    new_weight = min(weight1 + weight2, 10.0)
+
+                    new_item = {
+                        "text": f"Consolidated Concept: {item1.get('text')} + {item2.get('text')}",
+                        "vector": new_vec,
+                        "metadata": {
+                            "is_abstract": True,
+                            "importance_weight": new_weight,
+                            "consolidated_from": [item1.get("text"), item2.get("text")]
+                        },
+                        "domain": "abstract"
+                    }
+                    new_items.append(new_item)
+                    break # item1 уже слит, переходим к следующему
+
+        if to_remove or new_items:
+            # Обновляем память
+            self.memory = [item for i, item in enumerate(self.memory) if i not in to_remove]
+            self.memory.extend(new_items)
+            self._save()
+
     def calculate_domain_entropy(self, domain: str) -> float:
         """
         Оценивает дисперсию (разброс) векторов внутри домена как прокси-метрику информационной энтропии.
