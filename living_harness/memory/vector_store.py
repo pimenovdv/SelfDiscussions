@@ -398,6 +398,22 @@ class VectorStore:
         if dummy_vector:
             self.search(query_vector=dummy_vector, top_k=top_k, domain=next_domain)
 
+
+    def prune_stale_abstractions(self, threshold: float = 1.05):
+        """
+        Удаляет абстрактные концепты (is_abstract=True), чей importance_weight упал ниже порога.
+        Это симулирует забывание устаревших или бесполезных обобщений.
+        """
+        initial_count = len(self.memory)
+        self.memory = [
+            item for item in self.memory
+            if not (item.get("metadata", {}).get("is_abstract", False) and
+                    item.get("metadata", {}).get("importance_weight", 1.0) < threshold)
+        ]
+
+        if len(self.memory) < initial_count:
+            self._save()
+
     def calculate_domain_entropy(self, domain: str) -> float:
         """
         Оценивает дисперсию (разброс) векторов внутри домена как прокси-метрику информационной энтропии.
