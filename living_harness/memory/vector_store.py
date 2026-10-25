@@ -481,6 +481,61 @@ class VectorStore:
             self.memory.extend(new_items)
             self._save()
 
+    def reflect_on_monologue(self, similarity_threshold: float = 0.8) -> None:
+        """
+        Ищет паттерны (схожие векторы) среди элементов типа 'internal_monologue'
+        и формирует 'meta_knowledge' вывод.
+        """
+        monologues = [
+            (i, item) for i, item in enumerate(self.memory)
+            if item.get("metadata", {}).get("type") == "internal_monologue"
+        ]
+
+        if len(monologues) < 2:
+            return
+
+        to_remove = set()
+        new_items = []
+
+        for idx1, (mem_idx1, item1) in enumerate(monologues):
+            if mem_idx1 in to_remove:
+                continue
+
+            for idx2 in range(idx1 + 1, len(monologues)):
+                mem_idx2, item2 = monologues[idx2]
+                if mem_idx2 in to_remove:
+                    continue
+
+                vec1 = self._get_float_vector(item1)
+                vec2 = self._get_float_vector(item2)
+
+                if not vec1 or not vec2:
+                    continue
+
+                sim = self._cosine_similarity(vec1, vec2)
+                if sim >= similarity_threshold:
+                    to_remove.add(mem_idx1)
+                    to_remove.add(mem_idx2)
+
+                    new_vec = [(v1 + v2) / 2.0 for v1, v2 in zip(vec1, vec2)]
+
+                    new_item = {
+                        "text": f"Meta-Reflection: Found pattern in thoughts: {item1.get('text')} & {item2.get('text')}",
+                        "vector": new_vec,
+                        "metadata": {
+                            "type": "meta_knowledge",
+                            "importance_weight": 2.0
+                        },
+                        "domain": "abstract"
+                    }
+                    new_items.append(new_item)
+                    break
+
+        if to_remove or new_items:
+            self.memory = [item for i, item in enumerate(self.memory) if i not in to_remove]
+            self.memory.extend(new_items)
+            self._save()
+
     def calculate_domain_entropy(self, domain: str) -> float:
         """
         Оценивает дисперсию (разброс) векторов внутри домена как прокси-метрику информационной энтропии.
