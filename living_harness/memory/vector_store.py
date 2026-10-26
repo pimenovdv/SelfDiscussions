@@ -557,3 +557,19 @@ class VectorStore:
         mean_variance = float(np.mean(variances))
 
         return mean_variance
+
+    def forget_old_memories(self, threshold: float = 0.5):
+        """
+        Удаляет обычные (не абстрактные и не мета) элементы памяти, чей importance_weight упал ниже порога.
+        Имитирует процесс забывания редко используемой информации.
+        """
+        initial_count = len(self.memory)
+        self.memory = [
+            item for item in self.memory
+            if item.get("metadata", {}).get("is_abstract", False) or
+               item.get("metadata", {}).get("type") == "meta_knowledge" or
+               item.get("metadata", {}).get("importance_weight", 1.0) >= threshold
+        ]
+
+        if len(self.memory) < initial_count:
+            self._save()
