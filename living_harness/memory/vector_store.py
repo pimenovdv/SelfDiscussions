@@ -573,3 +573,20 @@ class VectorStore:
 
         if len(self.memory) < initial_count:
             self._save()
+
+    def spontaneous_activation(self, threshold: float = 0.6, boost_amount: float = 0.2):
+        """
+        Имитирует 'спонтанную активацию' памяти.
+        Находит элементы, чей вес находится чуть выше порога забывания (риск быть забытыми),
+        и слегка повышает их важность.
+        """
+        activated = False
+        for item in self.memory:
+            if not item.get("metadata", {}).get("is_abstract", False) and item.get("metadata", {}).get("type") != "meta_knowledge":
+                current_weight = item.get("metadata", {}).get("importance_weight", 1.0)
+                if threshold <= current_weight < (threshold + 0.3):
+                    item["metadata"]["importance_weight"] = current_weight + boost_amount
+                    activated = True
+
+        if activated:
+            self._save()
