@@ -574,6 +574,32 @@ class VectorStore:
         if len(self.memory) < initial_count:
             self._save()
 
+    def calculate_boredom(self, recent_k: int = 10) -> float:
+        """
+        Оценивает уровень "скуки" (boredom signal) на основе семантического однообразия последних добавленных элементов.
+        Возвращает значение от 0.0 (максимальная новизна) до 1.0 (максимальная скука/однообразие).
+        """
+        if len(self.memory) < recent_k:
+            return 0.0
+
+        recent_items = self.memory[-recent_k:]
+        import numpy as np
+        similarities = []
+
+        for i in range(len(recent_items)):
+            vec1 = self._get_float_vector(recent_items[i])
+            if not vec1: continue
+            for j in range(i + 1, len(recent_items)):
+                vec2 = self._get_float_vector(recent_items[j])
+                if not vec2: continue
+                sim = self._cosine_similarity(vec1, vec2)
+                similarities.append(sim)
+
+        if not similarities:
+            return 0.0
+
+        return float(np.mean(similarities))
+
     def spontaneous_activation(self, threshold: float = 0.6, boost_amount: float = 0.2):
         """
         Имитирует 'спонтанную активацию' памяти.
