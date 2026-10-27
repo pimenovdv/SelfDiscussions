@@ -1,0 +1,1213 @@
+[
+  {
+    "domain": "domain_a",
+    "text": "Item 0 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1267054
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 1 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1269557
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 2 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1271784
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 3 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1278481
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 4 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1283233
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 5 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1288648
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 6 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.129393
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 7 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1300852
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 8 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1308603
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 9 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1315968
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 10 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.13232
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 11 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1330981
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 12 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1338665
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 13 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1347013
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 14 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1356714
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 15 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1366124
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 16 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.137791
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 17 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1386209
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 18 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1394343
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 19 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1402338
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 20 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1411757
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 21 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1420283
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 22 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1431515
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 23 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.144247
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 24 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1452343
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 25 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1462414
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 26 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1473029
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 27 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.148259
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 28 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.149359
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 29 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1505554
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 30 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.151679
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 31 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1528258
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 32 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1539543
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 33 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1555746
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 34 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1567388
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 35 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1579945
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 36 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1592848
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 37 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1606019
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 38 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1618898
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 39 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1633017
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 40 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.164486
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 41 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.165766
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 42 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1670632
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 43 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1684287
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 44 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1697912
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 45 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1711664
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 46 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1726077
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 47 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2851362,
+      "importance_weight": 1.2000000000000002
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 48 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2851362,
+      "importance_weight": 1.2000000000000002
+    }
+  },
+  {
+    "domain": "domain_a",
+    "text": "Item 49 A",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2851362,
+      "importance_weight": 1.2000000000000002
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 0 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2927418,
+      "importance_weight": 1.3000000000000003
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 1 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2927418,
+      "importance_weight": 1.3000000000000003
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 2 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2927418,
+      "importance_weight": 1.3000000000000003
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 3 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2927418,
+      "importance_weight": 1.3000000000000003
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 4 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2927418,
+      "importance_weight": 1.3000000000000003
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 5 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1864903
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 6 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1882393
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 7 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1900005
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 8 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1918118
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 9 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.193702
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 10 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1954846
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 11 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1973176
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 12 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.1989431
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 13 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2007437
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 14 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2026606
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 15 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2046087
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 16 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2063625
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 17 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.208202
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 18 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.210031
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 19 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2120464
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 20 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2139182
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 21 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2159748
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 22 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2178743
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 23 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.219974
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 24 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.221973
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 25 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2241457
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 26 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2261288
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 27 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2281277
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 28 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2302384
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 29 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2322404
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 30 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2341986
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 31 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.236246
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 32 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2382436
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 33 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2405322
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 34 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.242634
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 35 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2448707
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 36 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.246961
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 37 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2491655
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 38 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2514193
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 39 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.253662
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 40 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2559452
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 41 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.258176
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 42 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.26099
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 43 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2633424
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 44 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2657561
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 45 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2681477
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 46 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2704124
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 47 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2826962,
+      "importance_weight": 1.1
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 48 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2826962,
+      "importance_weight": 1.1
+    }
+  },
+  {
+    "domain": "domain_b",
+    "text": "Item 49 B",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793130220.2826962,
+      "importance_weight": 1.1
+    }
+  }
+]
