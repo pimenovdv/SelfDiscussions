@@ -46,6 +46,18 @@ class VectorStore:
         for target in targets:
             hypotheses.append(f"Hypothesis: Domain '{target}' might be connected to other domains.")
         return hypotheses
+
+    def validate_hypothesis(self, hypothesis_text: str, hypothesis_vector: List[float], threshold: float = 0.5) -> bool:
+        """
+        Оценивает правдоподобность гипотезы на основе векторной близости к существующим знаниям.
+        Если среднее косинусное сходство с top-3 ближайшими соседями превышает порог, гипотеза принимается.
+        """
+        results = self.search(query_vector=hypothesis_vector, top_k=3)
+        if not results:
+            return False
+
+        avg_score = sum(res.get("score", 0.0) for res in results) / len(results)
+        return avg_score >= threshold
     def __init__(self, db_path: str = "living_harness/data/vector_memory.json", max_cache_size: int = 100):
         self.db_path = db_path
         self.max_cache_size = max_cache_size
