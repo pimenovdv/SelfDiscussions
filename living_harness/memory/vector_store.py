@@ -56,7 +56,7 @@ class VectorStore:
         if not results:
             return False
 
-        avg_score = sum(res.get("score", 0.0) for res in results) / len(results)
+        avg_score = sum(self._cosine_similarity(hypothesis_vector, self._get_float_vector(item)) for item in results) / len(results)
         return avg_score >= threshold
     def __init__(self, db_path: str = "living_harness/data/vector_memory.json", max_cache_size: int = 100):
         self.db_path = db_path
