@@ -47,6 +47,22 @@ class VectorStore:
             hypotheses.append(f"Hypothesis: Domain '{target}' might be connected to other domains.")
         return hypotheses
 
+    def validate_hypothesis_dynamic(self, hypothesis_text: str, hypothesis_vector: List[float], domain: str, base_threshold: float = 0.5) -> bool:
+        """
+        Оценивает правдоподобность гипотезы с адаптивным порогом, зависящим от энтропии домена.
+        """
+        entropy = self.calculate_domain_entropy(domain)
+        # Если энтропия высока (разнообразие), порог снижается (мягче), если низка - повышается (строже)
+        # Коэффициент 0.1 - для тонкой настройки
+        dynamic_threshold = max(0.1, min(0.9, base_threshold - (entropy * 0.1)))
+
+        results = self.search(query_vector=hypothesis_vector, top_k=3, domain=domain)
+        if not results:
+            return False
+
+        avg_score = sum(self._cosine_similarity(hypothesis_vector, self._get_float_vector(item)) for item in results) / len(results)
+        return avg_score >= dynamic_threshold
+
     def validate_hypothesis(self, hypothesis_text: str, hypothesis_vector: List[float], threshold: float = 0.5) -> bool:
         """
         Оценивает правдоподобность гипотезы на основе векторной близости к существующим знаниям.
