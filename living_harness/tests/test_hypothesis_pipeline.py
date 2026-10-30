@@ -25,7 +25,7 @@ def test_integrate_hypothesis_pipeline(temp_memory_file):
     }
 
     # Run the pipeline
-    integrated = store.integrate_hypothesis_pipeline()
+    integrated = store.integrate_hypothesis_pipeline(vectorization_callback=lambda h: [0.0, 0.0, 1.0])
 
     # Since C is isolated, it should generate a hypothesis for C and potentially validate it
     # We used a mock vector close to C's vector, so it should pass validation
