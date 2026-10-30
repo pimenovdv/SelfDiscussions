@@ -704,3 +704,22 @@ class VectorStore:
 
         if activated:
             self._save()
+
+
+    async def background_curiosity_cycle(self, generation_callback=None, vectorization_callback=None, interval_seconds: float = 60.0):
+        """Асинхронный фоновый цикл, который периодически ищет белые пятна, генерирует и валидирует гипотезы."""
+        import asyncio
+        while True:
+            try:
+                # Находим пробелы и генерируем гипотезы
+                successful_hypotheses = self.integrate_hypothesis_pipeline(
+                    generation_callback=generation_callback,
+                    vectorization_callback=vectorization_callback
+                )
+
+                # Дополнительная логика логирования или уведомления могла бы быть здесь
+
+            except Exception as e:
+                print(f"Error in background_curiosity_cycle: {e}")
+
+            await asyncio.sleep(interval_seconds)
