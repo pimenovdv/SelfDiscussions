@@ -723,3 +723,66 @@ class VectorStore:
                 print(f"Error in background_curiosity_cycle: {e}")
 
             await asyncio.sleep(interval_seconds)
+
+    def defragment_memory(self, similarity_threshold: float = 0.95):
+        """
+        Регулярная 'дефрагментация' (векторное дыхание).
+        Ищет элементы (кроме абстракций и мета-знаний) с очень высоким
+        косинусным сходством и объединяет их, удаляя дубликаты.
+        Освобождает емкость базы без потери смысла.
+        """
+        items_to_check = [
+            (i, item) for i, item in enumerate(self.memory)
+            if not item.get("metadata", {}).get("is_abstract", False) and
+               item.get("metadata", {}).get("type") != "meta_knowledge"
+        ]
+
+        if len(items_to_check) < 2:
+            return
+
+        to_remove = set()
+        new_items = []
+
+        for idx1, (mem_idx1, item1) in enumerate(items_to_check):
+            if mem_idx1 in to_remove:
+                continue
+
+            for idx2 in range(idx1 + 1, len(items_to_check)):
+                mem_idx2, item2 = items_to_check[idx2]
+                if mem_idx2 in to_remove:
+                    continue
+
+                vec1 = self._get_float_vector(item1)
+                vec2 = self._get_float_vector(item2)
+
+                if not vec1 or not vec2:
+                    continue
+
+                sim = self._cosine_similarity(vec1, vec2)
+                if sim >= similarity_threshold:
+                    # Почти дубликат, объединяем
+                    to_remove.add(mem_idx1)
+                    to_remove.add(mem_idx2)
+
+                    new_vec = [(v1 + v2) / 2.0 for v1, v2 in zip(vec1, vec2)]
+
+                    # Суммируем вес, чтобы сохранить важность объединенного знания
+                    w1 = item1.get("metadata", {}).get("importance_weight", 1.0)
+                    w2 = item2.get("metadata", {}).get("importance_weight", 1.0)
+
+                    new_item = {
+                        "text": f"Defragmented: {item1.get('text')} | {item2.get('text')}",
+                        "vector": new_vec,
+                        "metadata": {
+                            "importance_weight": min(w1 + w2, 10.0),
+                            "defragmented": True
+                        },
+                        "domain": item1.get("domain", "general")
+                    }
+                    new_items.append(new_item)
+                    break # Переходим к следующему
+
+        if to_remove or new_items:
+            self.memory = [item for i, item in enumerate(self.memory) if i not in to_remove]
+            self.memory.extend(new_items)
+            self._save()
