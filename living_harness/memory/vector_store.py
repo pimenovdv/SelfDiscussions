@@ -1,3 +1,4 @@
+import re
 import json
 import os
 import math
@@ -637,6 +638,55 @@ class VectorStore:
             return 0.0
 
         return float(np.mean(similarities))
+
+    def integrate_hypothesis_pipeline(self, generation_callback=None, vectorization_callback=None) -> List[dict]:
+        """
+        Объединяет механизмы любопытства, генерации и валидации в единый цикл.
+        Находит изолированные домены, генерирует для них гипотезы, проверяет их,
+        и сохраняет успешные в память как мета-знания.
+        """
+        integrated_hypotheses = []
+
+        # generate_curiosity_hypothesis already calls identify_curiosity_targets() inside
+        hypotheses = self.generate_curiosity_hypothesis()
+
+        for hyp_text in hypotheses:
+            # Extract target domain from hypothesis string "Hypothesis: Domain 'target' might be..."
+            match = re.search(r"Domain '(.+?)'", hyp_text)
+            if not match:
+                continue
+            target = match.group(1)
+
+            if generation_callback:
+                actual_hypothesis = generation_callback(target)
+            else:
+                actual_hypothesis = hyp_text
+
+            if vectorization_callback:
+                mock_vector = vectorization_callback(actual_hypothesis)
+            else:
+                # Fallback to zero vector if no model provided
+                mock_vector = [0.0] * 384
+
+            if self.validate_hypothesis_dynamic(actual_hypothesis, mock_vector, target):
+                new_item = {
+                    "text": actual_hypothesis,
+                    "vector": mock_vector,
+                    "domain": "meta",
+                    "metadata": {
+                        "type": "meta_knowledge",
+                        "source_domain": target,
+                        "importance_weight": 2.0
+                    }
+                }
+                self.memory.append(new_item)
+                integrated_hypotheses.append(new_item)
+
+        if integrated_hypotheses:
+            self._save()
+
+        return integrated_hypotheses
+
 
     def spontaneous_activation(self, threshold: float = 0.6, boost_amount: float = 0.2):
         """

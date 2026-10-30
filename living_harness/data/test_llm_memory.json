@@ -1,0 +1,57 @@
+[
+  {
+    "domain": "Science",
+    "text": "The sky is blue due to Rayleigh scattering.",
+    "vector": [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793336343.0294821
+    }
+  },
+  {
+    "domain": "Chemistry",
+    "text": "Water is composed of hydrogen and oxygen.",
+    "vector": [
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793336343.029768
+    }
+  },
+  {
+    "domain": "Philosophy",
+    "text": "Consciousness is a mystery that science hasn't fully explained.",
+    "vector": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "last_accessed": 1793336362.3675458,
+      "importance_weight": 1.1
+    }
+  },
+  {
+    "text": "\"Philosophy of science and chemistry is a field that explores the relationship between philosophy and science, examining how philosophical ideas and theories shape the development",
+    "vector": [
+      0.1,
+      0.7,
+      0.7,
+      0.0
+    ],
+    "domain": "meta",
+    "metadata": {
+      "type": "meta_knowledge",
+      "source_domain": "Philosophy",
+      "importance_weight": 2.0
+    }
+  }
+]

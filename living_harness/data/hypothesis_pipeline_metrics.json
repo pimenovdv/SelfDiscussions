@@ -1,0 +1,6 @@
+{
+  "targets_identified": 1,
+  "hypotheses_generated": 1,
+  "valid_hypotheses": 1,
+  "model_used": "HuggingFaceTB/SmolLM2-135M-Instruct"
+}
