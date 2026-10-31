@@ -688,6 +688,65 @@ class VectorStore:
         return integrated_hypotheses
 
 
+
+    def spreading_activation(self, spread_factor: float = 0.1, threshold: float = 2.0, top_k: int = 3):
+        """
+        Имитирует распространение активации (Spreading Activation).
+        Для элементов с высоким importance_weight (выше порога),
+        находит top_k ближайших соседей по косинусному сходству и
+        передает им часть своей активации.
+        """
+        if not self.memory:
+            return
+
+        active_indices = []
+        for i, item in enumerate(self.memory):
+            weight = item.get("metadata", {}).get("importance_weight", 1.0)
+            if weight > threshold:
+                active_indices.append((i, weight))
+
+        if not active_indices:
+            return
+
+        updates = {}
+        for idx, weight in active_indices:
+            item = self.memory[idx]
+            vec1 = self._get_float_vector(item)
+            if not vec1:
+                continue
+
+            neighbors = []
+            for j, neighbor_item in enumerate(self.memory):
+                if j == idx:
+                    continue
+                vec2 = self._get_float_vector(neighbor_item)
+                if not vec2:
+                    continue
+
+                sim = self._cosine_similarity(vec1, vec2)
+                if sim > 0:
+                    neighbors.append((j, sim))
+
+            neighbors.sort(key=lambda x: x[1], reverse=True)
+            for j, sim in neighbors[:top_k]:
+                is_active = False
+                for a_idx, _ in active_indices:
+                    if a_idx == j:
+                        is_active = True
+                        break
+
+                if not is_active:
+                    boost = weight * spread_factor * sim
+                    updates[j] = updates.get(j, 0.0) + boost
+
+        if updates:
+            for j, boost in updates.items():
+                if "metadata" not in self.memory[j]:
+                    self.memory[j]["metadata"] = {}
+                current_weight = self.memory[j]["metadata"].get("importance_weight", 1.0)
+                self.memory[j]["metadata"]["importance_weight"] = min(current_weight + boost, 5.0)
+            self._save()
+
     def spontaneous_activation(self, threshold: float = 0.6, boost_amount: float = 0.2):
         """
         Имитирует 'спонтанную активацию' памяти.
