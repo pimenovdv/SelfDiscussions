@@ -783,10 +783,12 @@ class VectorStore:
 
             await asyncio.sleep(interval_seconds)
 
-    def contextual_routing(self, query_vector: List[float], similarity_threshold: float = 0.5) -> List[dict]:
+    def contextual_routing(self, query_vector: List[float], base_similarity_threshold: float = 0.5, use_dynamic_threshold: bool = True) -> List[dict]:
         """
         Оценивает запрос и возвращает элементы памяти только из релевантных доменов.
         Вычисляет средний вектор для каждого домена и сравнивает с запросом.
+        При use_dynamic_threshold=True порог снижается для доменов с высокой энтропией,
+        расширяя окно контекста при неопределенности.
         """
         if not self.memory or not query_vector:
             return []
@@ -815,7 +817,15 @@ class VectorStore:
             mean_vector = np.mean(vectors, axis=0).tolist()
 
             sim = self._cosine_similarity(query_vector, mean_vector)
-            if sim >= similarity_threshold:
+
+            # Dynamic thresholding based on domain entropy
+            current_threshold = base_similarity_threshold
+            if use_dynamic_threshold:
+                entropy = self.calculate_domain_entropy(domain)
+                # Lower threshold for high entropy (uncertain) domains to expand context
+                current_threshold = max(0.2, base_similarity_threshold - (entropy * 0.15))
+
+            if sim >= current_threshold:
                 relevant_domains.append(domain)
 
         # If no domains are strictly relevant, return all to prevent complete failure

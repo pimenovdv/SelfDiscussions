@@ -31,7 +31,7 @@ def test_contextual_routing(store):
     query_vector_a = [0.95] * 192 + [0.05] * 192
 
     # Route context
-    routed_memory = store.contextual_routing(query_vector_a, similarity_threshold=0.8)
+    routed_memory = store.contextual_routing(query_vector_a, base_similarity_threshold=0.8)
 
     # Should only contain items from domain_a
     assert len(routed_memory) == 2
@@ -43,7 +43,7 @@ def test_contextual_routing(store):
     query_vector_b = [0.05] * 192 + [0.95] * 192
 
     # Route context
-    routed_memory_b = store.contextual_routing(query_vector_b, similarity_threshold=0.8)
+    routed_memory_b = store.contextual_routing(query_vector_b, base_similarity_threshold=0.8)
 
     # Should only contain items from domain_b
     assert len(routed_memory_b) == 2
@@ -53,5 +53,5 @@ def test_contextual_routing(store):
 
     # Query completely unrelated (e.g. all zeros) - should fallback to all memory
     query_vector_unrelated = [0.0] * 384
-    routed_memory_unrelated = store.contextual_routing(query_vector_unrelated, similarity_threshold=0.8)
+    routed_memory_unrelated = store.contextual_routing(query_vector_unrelated, base_similarity_threshold=0.8)
     assert len(routed_memory_unrelated) == 4
