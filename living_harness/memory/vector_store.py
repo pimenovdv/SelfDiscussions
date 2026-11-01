@@ -783,6 +783,48 @@ class VectorStore:
 
             await asyncio.sleep(interval_seconds)
 
+    def contextual_routing(self, query_vector: List[float], similarity_threshold: float = 0.5) -> List[dict]:
+        """
+        Оценивает запрос и возвращает элементы памяти только из релевантных доменов.
+        Вычисляет средний вектор для каждого домена и сравнивает с запросом.
+        """
+        if not self.memory or not query_vector:
+            return []
+
+        # Group items by domain
+        domain_items = {}
+        for item in self.memory:
+            domain = item.get("domain", "general")
+            if domain not in domain_items:
+                domain_items[domain] = []
+            domain_items[domain].append(item)
+
+        relevant_domains = []
+        for domain, items in domain_items.items():
+            # Calculate mean vector for the domain
+            vectors = []
+            for item in items:
+                vec = self._get_float_vector(item)
+                if vec:
+                    vectors.append(vec)
+
+            if not vectors:
+                continue
+
+            import numpy as np
+            mean_vector = np.mean(vectors, axis=0).tolist()
+
+            sim = self._cosine_similarity(query_vector, mean_vector)
+            if sim >= similarity_threshold:
+                relevant_domains.append(domain)
+
+        # If no domains are strictly relevant, return all to prevent complete failure
+        if not relevant_domains:
+             return self.memory
+
+        routed_memory = [item for item in self.memory if item.get("domain", "general") in relevant_domains]
+        return routed_memory
+
     def defragment_memory(self, similarity_threshold: float = 0.95):
         """
         Регулярная 'дефрагментация' (векторное дыхание).
