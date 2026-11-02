@@ -86,3 +86,20 @@ def k_means_clustering(vectors: List[List[float]], k: int = 3, max_iters: int = 
         centroids = new_centroids
 
     return centroids, labels
+
+def adaptive_clustering(vectors: List[List[float]], use_cosine: bool = True) -> Tuple[List[List[float]], List[int]]:
+    """
+    Выполняет кластеризацию векторов с автоматическим определением оптимального
+    количества кластеров (k) на основе эвристики k = sqrt(n/2).
+    """
+    if not vectors:
+        return [], []
+
+    n = len(vectors)
+    if n <= 1:
+        return vectors, [0] * n
+
+    k = int(math.sqrt(n / 2))
+    k = max(2, min(k, n))
+
+    return k_means_clustering(vectors, k=k, use_cosine=use_cosine)
