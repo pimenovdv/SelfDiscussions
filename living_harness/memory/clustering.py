@@ -103,3 +103,38 @@ def adaptive_clustering(vectors: List[List[float]], use_cosine: bool = True) -> 
     k = max(2, min(k, n))
 
     return k_means_clustering(vectors, k=k, use_cosine=use_cosine)
+
+def hierarchical_clustering(vectors: List[List[float]], max_depth: int = 3, use_cosine: bool = True) -> dict:
+    """
+    Рекурсивно разбивает векторы на подкластеры с использованием adaptive_clustering.
+    Возвращает древовидную структуру.
+    """
+    if not vectors:
+        return {}
+
+    def build_tree(vec_list, depth):
+        if depth >= max_depth or len(vec_list) <= 2:
+            return {"size": len(vec_list), "children": [], "is_leaf": True}
+
+        centroids, labels = adaptive_clustering(vec_list, use_cosine=use_cosine)
+
+        if len(set(labels)) <= 1:
+            return {"size": len(vec_list), "children": [], "is_leaf": True}
+
+        clusters = {i: [] for i in range(len(centroids))}
+        for v, lbl in zip(vec_list, labels):
+            clusters[lbl].append(v)
+
+        children = []
+        for i in range(len(centroids)):
+            if clusters[i]:
+                children.append(build_tree(clusters[i], depth + 1))
+
+        return {
+            "size": len(vec_list),
+            "centroids": centroids,
+            "children": children,
+            "is_leaf": False
+        }
+
+    return build_tree(vectors, 0)
