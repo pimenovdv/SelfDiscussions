@@ -2,3 +2,4 @@
 |---|---|---|---|---|---|
 | 01.11.26 | 32 | 35 | 77 | ai, biology, computer_science, physics, psychology | чтобы, этапа, должны, просто, денис |
 | 02.11.26 | 32 | 35 | 77 | ai, biology, computer_science, physics, psychology | чтобы, этапа, должны, просто, денис |
+| 03.11.26 | 32 | 35 | 77 | ai, biology, computer_science, physics, psychology | чтобы, этапа, должны, просто, денис |
