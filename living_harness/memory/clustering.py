@@ -114,12 +114,30 @@ def hierarchical_clustering(vectors: List[List[float]], max_depth: int = 3, use_
 
     def build_tree(vec_list, depth):
         if depth >= max_depth or len(vec_list) <= 2:
-            return {"size": len(vec_list), "children": [], "is_leaf": True}
+            compressed = [0.0] * len(vec_list[0])
+            for v in vec_list:
+                for i in range(len(v)):
+                    compressed[i] += v[i]
+            compressed = [x / len(vec_list) for x in compressed]
+            if use_cosine:
+                norm = math.sqrt(sum(a ** 2 for a in compressed))
+                if norm > 0:
+                    compressed = [x / norm for x in compressed]
+            return {"size": len(vec_list), "children": [], "is_leaf": True, "compressed_vector": compressed}
 
         centroids, labels = adaptive_clustering(vec_list, use_cosine=use_cosine)
 
         if len(set(labels)) <= 1:
-            return {"size": len(vec_list), "children": [], "is_leaf": True}
+            compressed = [0.0] * len(vec_list[0])
+            for v in vec_list:
+                for i in range(len(v)):
+                    compressed[i] += v[i]
+            compressed = [x / len(vec_list) for x in compressed]
+            if use_cosine:
+                norm = math.sqrt(sum(a ** 2 for a in compressed))
+                if norm > 0:
+                    compressed = [x / norm for x in compressed]
+            return {"size": len(vec_list), "children": [], "is_leaf": True, "compressed_vector": compressed}
 
         clusters = {i: [] for i in range(len(centroids))}
         for v, lbl in zip(vec_list, labels):
