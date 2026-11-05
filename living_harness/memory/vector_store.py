@@ -835,6 +835,60 @@ class VectorStore:
         routed_memory = [item for item in self.memory if item.get("domain", "general") in relevant_domains]
         return routed_memory
 
+
+    def consolidate_abstractions(self, max_depth: int = 3, use_cosine: bool = True):
+        """
+        Использует иерархическую кластеризацию для формирования многоуровневых абстракций.
+        """
+        from living_harness.memory.clustering import hierarchical_clustering
+
+        # Filter items that are not abstract and not meta
+        items_to_cluster = [
+            item for item in self.memory
+            if not item.get("metadata", {}).get("is_abstract", False) and
+               item.get("metadata", {}).get("type") != "meta_knowledge"
+        ]
+
+        if len(items_to_cluster) < 3:
+            return
+
+        vectors = [self._get_float_vector(item) for item in items_to_cluster if self._get_float_vector(item)]
+        if not vectors:
+            return
+
+        tree = hierarchical_clustering(vectors, max_depth=max_depth, use_cosine=use_cosine)
+
+        def extract_leaves(node, leaves):
+            if node.get("is_leaf"):
+                leaves.append(node)
+            else:
+                for child in node.get("children", []):
+                    extract_leaves(child, leaves)
+
+        leaves = []
+        extract_leaves(tree, leaves)
+
+        new_abstractions = []
+        for leaf in leaves:
+            vec = leaf.get("compressed_vector")
+            if vec:
+                new_item = {
+                    "text": f"Hierarchical Abstraction (size {leaf.get('size')})",
+                    "vector": vec,
+                    "metadata": {
+                        "is_abstract": True,
+                        "importance_weight": 2.0,
+                        "type": "hierarchical_abstraction",
+                        "size": leaf.get("size")
+                    },
+                    "domain": "general"
+                }
+                new_abstractions.append(new_item)
+
+        if new_abstractions:
+            self.memory.extend(new_abstractions)
+            self._save()
+
     def defragment_memory(self, similarity_threshold: float = 0.95):
         """
         Регулярная 'дефрагментация' (векторное дыхание).
