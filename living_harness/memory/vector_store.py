@@ -836,18 +836,27 @@ class VectorStore:
         return routed_memory
 
 
-    def consolidate_abstractions(self, max_depth: int = 3, use_cosine: bool = True):
+    def consolidate_abstractions(self, max_depth: int = 3, use_cosine: bool = True, target_meta_level: int = 0):
         """
         Использует иерархическую кластеризацию для формирования многоуровневых абстракций.
+        Если target_meta_level=0, кластеризует обычные (не абстрактные) элементы.
+        Если >0, кластеризует абстракции предыдущего уровня для создания мета-правил.
         """
         from living_harness.memory.clustering import hierarchical_clustering
 
-        # Filter items that are not abstract and not meta
-        items_to_cluster = [
-            item for item in self.memory
-            if not item.get("metadata", {}).get("is_abstract", False) and
-               item.get("metadata", {}).get("type") != "meta_knowledge"
-        ]
+        # Filter items
+        if target_meta_level == 0:
+            items_to_cluster = [
+                item for item in self.memory
+                if not item.get("metadata", {}).get("is_abstract", False) and
+                   item.get("metadata", {}).get("type") != "meta_knowledge"
+            ]
+        else:
+            items_to_cluster = [
+                item for item in self.memory
+                if item.get("metadata", {}).get("is_abstract", False) and
+                   item.get("metadata", {}).get("meta_level", 1) == target_meta_level
+            ]
 
         if len(items_to_cluster) < 3:
             return
@@ -869,17 +878,19 @@ class VectorStore:
         extract_leaves(tree, leaves)
 
         new_abstractions = []
+        new_meta_level = target_meta_level + 1
         for leaf in leaves:
             vec = leaf.get("compressed_vector")
             if vec:
                 new_item = {
-                    "text": f"Hierarchical Abstraction (size {leaf.get('size')})",
+                    "text": f"Hierarchical Abstraction Level {new_meta_level} (size {leaf.get('size')})",
                     "vector": vec,
                     "metadata": {
                         "is_abstract": True,
-                        "importance_weight": 2.0,
+                        "importance_weight": 2.0 * new_meta_level,
                         "type": "hierarchical_abstraction",
-                        "size": leaf.get("size")
+                        "size": leaf.get("size"),
+                        "meta_level": new_meta_level
                     },
                     "domain": "general"
                 }
