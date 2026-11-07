@@ -1,0 +1,35 @@
+[
+  {
+    "text": "Concept A (Active)",
+    "vector": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "metadata": {
+      "importance_weight": 3.0
+    }
+  },
+  {
+    "text": "Concept B (Neighbor)",
+    "vector": [
+      0.9,
+      0.1,
+      0.0
+    ],
+    "metadata": {
+      "importance_weight": 2.4908256020104282
+    }
+  },
+  {
+    "text": "Concept C (Distant)",
+    "vector": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metadata": {
+      "importance_weight": 1.0
+    }
+  }
+]

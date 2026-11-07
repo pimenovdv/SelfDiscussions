@@ -161,6 +161,7 @@ class VectorStore:
         # Find the most relevant meta-rule
         best_rule = None
         best_sim = -1.0
+        best_rule_item = None
 
         for rule in meta_rules:
             rule_vec = self._get_float_vector(rule)
@@ -170,8 +171,11 @@ class VectorStore:
             if sim > best_sim:
                 best_sim = sim
                 best_rule = rule_vec
+                best_rule_item = rule
 
         if best_rule and best_sim > 0.3: # Threshold for modulation
+            best_rule_item["metadata"]["last_used"] = time.time()
+            self._save()
             modulated = []
             for v, r in zip(vector, best_rule):
                 modulated.append(v * (1 - intensity) + r * intensity)
@@ -938,6 +942,27 @@ class VectorStore:
         if new_abstractions:
             self.memory.extend(new_abstractions)
             self._save()
+
+    def apply_decay(self, decay_rate: float = 0.1, last_used_threshold: float = 3600):
+        """
+        Применяет механизм устаревания (decay) к абстракциям (meta_level >= 2).
+        Снижает meta_level или удаляет абстракции, если они не использовались.
+        """
+        current_time = time.time()
+        to_remove = []
+        for i, item in enumerate(self.memory):
+            meta = item.get("metadata", {})
+            if meta.get("is_abstract", False) and meta.get("meta_level", 0) >= 2:
+                last_used = meta.get("last_used", 0)
+                if current_time - last_used > last_used_threshold:
+                    # Decay logic: decrease meta_level or remove
+                    meta["meta_level"] = max(1, meta["meta_level"] - 1)
+                    meta["last_used"] = current_time # Reset to give it another chance at lower level
+                    if meta["meta_level"] == 1:
+                        # Once it drops below meta-level 2, it could be fully forgotten or kept as lower-level
+                        pass
+
+        self._save()
 
     def defragment_memory(self, similarity_threshold: float = 0.95):
         """
