@@ -140,6 +140,45 @@ class VectorStore:
         dequantized = [min_v + (v * scale) for v in q_vector]
         return dequantized
 
+
+    def predictive_modulation(self, vector: List[float], intensity: float = 0.1) -> List[float]:
+        """
+        Предварительная модуляция входящего вектора на основе существующих мета-правил (meta_level >= 2).
+        Подтягивает вектор ближе к центроидам активных мета-правил, имитируя top-down predictive coding.
+        """
+        if not vector:
+            return vector
+
+        meta_rules = [
+            item for item in self.memory
+            if item.get("metadata", {}).get("is_abstract", False) and
+               item.get("metadata", {}).get("meta_level", 0) >= 2
+        ]
+
+        if not meta_rules:
+            return vector
+
+        # Find the most relevant meta-rule
+        best_rule = None
+        best_sim = -1.0
+
+        for rule in meta_rules:
+            rule_vec = self._get_float_vector(rule)
+            if not rule_vec:
+                continue
+            sim = self._cosine_similarity(vector, rule_vec)
+            if sim > best_sim:
+                best_sim = sim
+                best_rule = rule_vec
+
+        if best_rule and best_sim > 0.3: # Threshold for modulation
+            modulated = []
+            for v, r in zip(vector, best_rule):
+                modulated.append(v * (1 - intensity) + r * intensity)
+            return modulated
+
+        return vector
+
     def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
