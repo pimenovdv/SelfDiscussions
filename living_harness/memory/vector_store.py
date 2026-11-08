@@ -174,6 +174,11 @@ class VectorStore:
                 best_rule_item = rule
 
         if best_rule and best_sim > 0.3: # Threshold for modulation
+            emotion = best_rule_item.get("metadata", {}).get("emotion")
+            if emotion in ["negative", "fear", "anxiety"]:
+                intensity = min(1.0, intensity * 1.5)
+            elif emotion in ["positive", "joy", "calm"]:
+                intensity = max(0.0, intensity * 0.8)
             best_rule_item["metadata"]["last_used"] = time.time()
             self._save()
             modulated = []
@@ -925,6 +930,27 @@ class VectorStore:
         for leaf in leaves:
             vec = leaf.get("compressed_vector")
             if vec:
+                # To get emotion for this specific leaf, we check if the leaf itself has a pre-calculated emotion or
+                # extract it if we had stored original item info. However, hierarchical clustering groups vectors.
+                # Since the current implementation doesn't keep items in leaves explicitly, we will use the leaf's
+                # average vector to find the closest original items in the cluster and infer emotion.
+
+                dominant_emotion = None
+                leaf_vec = leaf.get("compressed_vector")
+                if leaf_vec:
+                    # Find items closest to this cluster's centroid
+                    cluster_emotions = []
+                    for item in items_to_cluster:
+                        item_vec = self._get_float_vector(item)
+                        if item_vec and self._cosine_similarity(leaf_vec, item_vec) > 0.8:
+                            emo = item.get("metadata", {}).get("emotion")
+                            if emo:
+                                cluster_emotions.append(emo)
+
+                    if cluster_emotions:
+                        from collections import Counter
+                        dominant_emotion = Counter(cluster_emotions).most_common(1)[0][0]
+
                 new_item = {
                     "text": f"Hierarchical Abstraction Level {new_meta_level} (size {leaf.get('size')})",
                     "vector": vec,
@@ -937,6 +963,8 @@ class VectorStore:
                     },
                     "domain": "general"
                 }
+                if dominant_emotion:
+                    new_item["metadata"]["emotion"] = dominant_emotion
                 new_abstractions.append(new_item)
 
         if new_abstractions:
