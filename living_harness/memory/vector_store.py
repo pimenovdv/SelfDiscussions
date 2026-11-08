@@ -188,7 +188,7 @@ class VectorStore:
 
         return vector
 
-    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None):
+    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None, emotion_weight: float = 0.0):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
@@ -196,6 +196,10 @@ class VectorStore:
             metadata["last_accessed"] = time.time()
         if emotion:
             metadata["emotion"] = emotion
+
+        # Интеграция внимания на основе эмоций:
+        # Сохраняем вес эмоции (по модулю, т.к. важна интенсивность, а не знак)
+        metadata["emotion_weight"] = abs(emotion_weight)
 
         stored_vector = vector
 
@@ -905,6 +909,18 @@ class VectorStore:
                 if item.get("metadata", {}).get("is_abstract", False) and
                    item.get("metadata", {}).get("meta_level", 1) == target_meta_level
             ]
+
+        # Интеграция внимания на основе эмоций:
+        # Приоритизируем доступ и консолидацию событий с высоким "эмоциональным весом".
+        # Ограничиваем количество элементов для кластеризации, выбирая наиболее "яркие" (с наивысшим emotion_weight + recency).
+        # Для простоты отсортируем по emotion_weight (по убыванию) и возьмем топ-N (например, 50).
+        def get_priority(item):
+            return item.get("metadata", {}).get("emotion_weight", 0.0)
+
+        items_to_cluster = sorted(items_to_cluster, key=get_priority, reverse=True)
+        # Ограничиваем выборку наиболее важными элементами (имитация фокуса внимания)
+        MAX_ITEMS_TO_CLUSTER = 100
+        items_to_cluster = items_to_cluster[:MAX_ITEMS_TO_CLUSTER]
 
         if len(items_to_cluster) < 3:
             return
