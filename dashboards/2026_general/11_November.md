@@ -7,3 +7,4 @@
 | 05.11.26 | 33 | 35 | 78 | ai, biology, computer_science, physics, psychology | этапа, чтобы, должны, просто, денис |
 | 06.11.26 | 33 | 35 | 79 | ai, biology, computer_science, physics, psychology | этапа, чтобы, должны, просто, денис |
 | 08.11.26 | 33 | 35 | 80 | ai, biology, computer_science, physics, psychology | этапа, чтобы, должны, задачи, денис |
+| 09.11.26 | 33 | 35 | 80 | ai, biology, computer_science, physics, psychology | этапа, чтобы, должны, задачи, денис |
