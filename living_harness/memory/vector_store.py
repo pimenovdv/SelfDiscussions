@@ -194,6 +194,8 @@ class VectorStore:
             metadata = {}
         if "last_accessed" not in metadata:
             metadata["last_accessed"] = time.time()
+        if "timestamp" not in metadata:
+            metadata["timestamp"] = time.time()
         if emotion:
             metadata["emotion"] = emotion
 
@@ -243,6 +245,21 @@ class VectorStore:
                 metadata.get("quantize_max", 1.0)
             )
         return vector
+
+
+    def retrieve_by_time(self, start_time: float, end_time: float, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Извлекает элементы памяти, попадающие в заданное временное окно.
+        """
+        results = []
+        for item in self.memory:
+            ts = item.get("metadata", {}).get("timestamp", 0)
+            if start_time <= ts <= end_time:
+                results.append(item)
+
+        # Сортируем по убыванию времени (сначала новые)
+        results.sort(key=lambda x: x.get("metadata", {}).get("timestamp", 0), reverse=True)
+        return results[:limit]
 
     def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None, emotional_state: Optional[str] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
