@@ -1,0 +1,8 @@
+{
+  "timestamp": 1794254429.528055,
+  "sequence_length": 4,
+  "target_event": "evt3",
+  "predicted": "Событие D",
+  "actual": "Событие D: Пользователь добавил товар в корзину",
+  "success": true
+}
