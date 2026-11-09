@@ -261,6 +261,32 @@ class VectorStore:
         results.sort(key=lambda x: x.get("metadata", {}).get("timestamp", 0), reverse=True)
         return results[:limit]
 
+    def retrieve_sequence(self, target_event_id: str, time_window: float = 3600.0, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Извлекает цепочку событий, произошедших в определенном временном окне вокруг заданного события.
+        """
+        target_event = None
+        for item in self.memory:
+            if item.get("id") == target_event_id:
+                target_event = item
+                break
+
+        if not target_event:
+            return []
+
+        target_ts = target_event.get("metadata", {}).get("timestamp", 0)
+        start_time = target_ts - time_window
+        end_time = target_ts + time_window
+
+        sequence = []
+        for item in self.memory:
+            ts = item.get("metadata", {}).get("timestamp", 0)
+            if start_time <= ts <= end_time:
+                sequence.append(item)
+
+        sequence.sort(key=lambda x: x.get("metadata", {}).get("timestamp", 0))
+        return sequence[:limit]
+
     def search(self, query_vector: List[float], top_k: int = 3, domain: Optional[Union[str, List[str]]] = None, emotional_state: Optional[str] = None) -> List[Dict[str, Any]]:
         """Ищет top_k наиболее похожих элементов по косинусному сходству."""
 
