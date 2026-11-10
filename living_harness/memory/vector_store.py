@@ -1,3 +1,4 @@
+import random
 import re
 import json
 import os
@@ -37,6 +38,35 @@ class VectorStore:
         if active_goal:
             active_goal["metadata"]["status"] = "completed"
             self._save()
+
+    def _get_float_vector(self, item: Dict[str, Any]) -> List[float]:
+        """Возвращает вектор в формате float. Декодирует если нужно."""
+        vector = item.get("vector", [])
+        metadata = item.get("metadata", {})
+
+        if metadata.get("is_quantized", False):
+            return self._dequantize_vector(
+                vector,
+                metadata.get("quantize_min", 0.0),
+                metadata.get("quantize_max", 1.0)
+            )
+        return vector
+
+    def get_uncertain_goal_vector(self, noise_level: float = 0.05) -> List[float]:
+        """
+        Возвращает вектор активной цели с добавлением структурного шума.
+        Эмулирует когнитивную неоднозначность намерений.
+        Пример вызова:
+        vec = store.get_uncertain_goal_vector(0.1)
+        """
+        active_goal = self.get_active_goal()
+        if not active_goal:
+            return []
+        goal_vec = self._get_float_vector(active_goal)
+        if not goal_vec:
+            return []
+        return [float(v + random.gauss(0, noise_level)) for v in goal_vec]
+
     def identify_curiosity_targets(self) -> List[str]:
         nodes_set = set()
         in_degrees = {}
@@ -260,20 +290,6 @@ class VectorStore:
         if norm_v1 == 0.0 or norm_v2 == 0.0:
             return 0.0
         return dot_product / (norm_v1 * norm_v2)
-
-    def _get_float_vector(self, item: Dict[str, Any]) -> List[float]:
-        """Возвращает вектор в формате float. Декодирует если нужно."""
-        vector = item.get("vector", [])
-        metadata = item.get("metadata", {})
-
-        if metadata.get("is_quantized", False):
-            return self._dequantize_vector(
-                vector,
-                metadata.get("quantize_min", 0.0),
-                metadata.get("quantize_max", 1.0)
-            )
-        return vector
-
 
     def retrieve_by_time(self, start_time: float, end_time: float, limit: int = 10) -> List[Dict[str, Any]]:
         """

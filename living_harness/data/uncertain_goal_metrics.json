@@ -1,0 +1,19 @@
+{
+  "status": "success",
+  "description": "Simulation for uncertain goal progression",
+  "goal_variance": 0.1,
+  "original_vector": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "noisy_vector": [
+    1.1284588566978155,
+    0.1351043023696443,
+    0.14339738231580965,
+    0.05381596456257746,
+    0.1979066320860732
+  ]
+}
