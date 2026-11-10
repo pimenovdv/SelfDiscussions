@@ -9,6 +9,34 @@ import numpy as np
 from typing import List, Dict, Any, Optional, Union, Tuple
 
 class VectorStore:
+
+    def set_active_goal(self, goal_text: str, goal_vector: List[float], metadata: Optional[Dict[str, Any]] = None):
+        if metadata is None:
+            metadata = {}
+        metadata["type"] = "goal"
+        metadata["status"] = "active"
+        self.add_item(text=goal_text, vector=goal_vector, metadata=metadata, domain="goals")
+
+    def get_active_goal(self) -> Optional[Dict[str, Any]]:
+        for item in reversed(self.memory):
+            if item.get("metadata", {}).get("type") == "goal" and item.get("metadata", {}).get("status") == "active":
+                return item
+        return None
+
+    def evaluate_progress_towards_goal(self, event_vector: List[float]) -> float:
+        active_goal = self.get_active_goal()
+        if not active_goal:
+            return 0.0
+        goal_vec = self._get_float_vector(active_goal)
+        if not goal_vec:
+            return 0.0
+        return self._cosine_similarity(goal_vec, event_vector)
+
+    def mark_goal_completed(self):
+        active_goal = self.get_active_goal()
+        if active_goal:
+            active_goal["metadata"]["status"] = "completed"
+            self._save()
     def identify_curiosity_targets(self) -> List[str]:
         nodes_set = set()
         in_degrees = {}
