@@ -246,7 +246,7 @@ class VectorStore:
 
         return vector
 
-    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None, emotion_weight: float = 0.0):
+    def add_item(self, text: str, vector: List[float], metadata: Optional[Dict[str, Any]] = None, domain: str = "general", quantize: bool = False, emotion: Optional[str] = None, emotion_weight: float = 0.0, modality: str = "text", linked_concept: Optional[str] = None):
         """Добавляет элемент в векторное хранилище."""
         if metadata is None:
             metadata = {}
@@ -254,6 +254,9 @@ class VectorStore:
             metadata["last_accessed"] = time.time()
         if "timestamp" not in metadata:
             metadata["timestamp"] = time.time()
+        metadata["modality"] = modality
+        if linked_concept:
+            metadata["linked_concept"] = linked_concept
         if emotion:
             metadata["emotion"] = emotion
 
