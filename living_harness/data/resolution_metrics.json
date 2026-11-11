@@ -1,0 +1,9 @@
+{
+    "abstractions_generated": 1,
+    "source_pairs": 1,
+    "threshold_used": -0.5,
+    "domain": "evolution",
+    "meta_levels": [
+        2
+    ]
+}
