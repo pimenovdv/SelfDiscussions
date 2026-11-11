@@ -67,6 +67,27 @@ class VectorStore:
             return []
         return [float(v + random.gauss(0, noise_level)) for v in goal_vec]
 
+
+    def detect_cognitive_dissonance(self, domain: str, threshold: float = -0.5) -> List[Tuple[Dict[str, Any], Dict[str, Any]]]:
+        """
+        Ищет противоречия (когнитивный диссонанс) внутри одного домена.
+        Возвращает пары элементов, чье косинусное сходство ниже или равно threshold.
+        """
+        items = [item for item in self.memory if item.get("domain", "general") == domain]
+        dissonances = []
+        for i in range(len(items)):
+            vec1 = self._get_float_vector(items[i])
+            if not vec1:
+                continue
+            for j in range(i + 1, len(items)):
+                vec2 = self._get_float_vector(items[j])
+                if not vec2:
+                    continue
+                sim = self._cosine_similarity(vec1, vec2)
+                if sim <= threshold:
+                    dissonances.append((items[i], items[j]))
+        return dissonances
+
     def identify_curiosity_targets(self) -> List[str]:
         nodes_set = set()
         in_degrees = {}
