@@ -88,6 +88,50 @@ class VectorStore:
                     dissonances.append((items[i], items[j]))
         return dissonances
 
+
+    def synthesize_resolution(self, domain: str, threshold: float = -0.5) -> List[Dict[str, Any]]:
+        """
+        Формирует новые абстракции (мета-правила) на основе пар когнитивного диссонанса.
+        Для каждой пары (item1, item2) с косинусным сходством <= threshold создается
+        новый элемент, вектор которого - среднее векторов конфликтующих элементов,
+        что символизирует их синтез на более высоком мета-уровне.
+        """
+        dissonances = self.detect_cognitive_dissonance(domain, threshold)
+        new_abstractions = []
+        for item1, item2 in dissonances:
+            vec1 = self._get_float_vector(item1)
+            vec2 = self._get_float_vector(item2)
+            if not vec1 or not vec2:
+                continue
+
+            synth_vec = [(v1 + v2) / 2.0 for v1, v2 in zip(vec1, vec2)]
+
+            text1 = item1.get("text", "Unknown")
+            text2 = item2.get("text", "Unknown")
+
+            meta1 = item1.get("metadata", {}).get("meta_level", 1)
+            meta2 = item2.get("metadata", {}).get("meta_level", 1)
+            new_meta = max(meta1, meta2) + 1
+
+            new_item = {
+                "text": f"Synthesized Resolution: [{text1}] and [{text2}]",
+                "vector": synth_vec,
+                "metadata": {
+                    "is_abstract": True,
+                    "type": "meta_knowledge",
+                    "meta_level": new_meta,
+                    "resolution_source": [text1, text2]
+                },
+                "domain": domain
+            }
+            new_abstractions.append(new_item)
+
+        if new_abstractions:
+            self.memory.extend(new_abstractions)
+            self._save()
+
+        return new_abstractions
+
     def identify_curiosity_targets(self) -> List[str]:
         nodes_set = set()
         in_degrees = {}
