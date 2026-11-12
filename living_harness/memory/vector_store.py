@@ -92,19 +92,37 @@ class VectorStore:
     def synthesize_resolution(self, domain: str, threshold: float = -0.5) -> List[Dict[str, Any]]:
         """
         Формирует новые абстракции (мета-правила) на основе пар когнитивного диссонанса.
-        Для каждой пары (item1, item2) с косинусным сходством <= threshold создается
-        новый элемент, вектор которого - среднее векторов конфликтующих элементов,
-        что символизирует их синтез на более высоком мета-уровне.
+        Использует нелинейную интерполяцию, учитывающую плотность смыслового кластера
+        вокруг каждого из конфликтующих векторов. Вектор с большей "массой" (плотностью)
+        оказывает большее влияние на итоговую абстракцию.
         """
         dissonances = self.detect_cognitive_dissonance(domain, threshold)
         new_abstractions = []
+
+        def calculate_cluster_density(target_vec: List[float]) -> float:
+            density = 1.0
+            for item in self.memory:
+                if item.get("domain", "general") == domain:
+                    v = self._get_float_vector(item)
+                    if v:
+                        sim = self._cosine_similarity(target_vec, v)
+                        if 0.8 < sim < 1.0001:
+                            density += sim
+            return density
+
         for item1, item2 in dissonances:
             vec1 = self._get_float_vector(item1)
             vec2 = self._get_float_vector(item2)
             if not vec1 or not vec2:
                 continue
 
-            synth_vec = [(v1 + v2) / 2.0 for v1, v2 in zip(vec1, vec2)]
+            dens1 = calculate_cluster_density(vec1)
+            dens2 = calculate_cluster_density(vec2)
+
+            w1 = (dens1 ** 2) / (dens1 ** 2 + dens2 ** 2)
+            w2 = (dens2 ** 2) / (dens1 ** 2 + dens2 ** 2)
+
+            synth_vec = [v1 * w1 + v2 * w2 for v1, v2 in zip(vec1, vec2)]
 
             text1 = item1.get("text", "Unknown")
             text2 = item2.get("text", "Unknown")
